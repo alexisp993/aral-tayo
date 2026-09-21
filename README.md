@@ -52,7 +52,7 @@ Add the Supabase URL, publishable key, and secret/service-role key to `.env.loca
 
 All four lesson steps are tied to the authenticated account and stored in Supabase. Learn and Flashcards completion, Practice attempts, and quiz completion sync across a student's devices; quiz results, XP, streaks, and achievements are also account-linked.
 
-The Quiz unlocks after at least six of the seven distinct Practice activities have been answered correctly across saved attempts.
+The Quiz unlocks after at least six of the seven distinct Practice activities have been answered correctly across saved attempts. Each Fraction Quest has five shuffled checkpoints containing Bridge Builder, Treasure Match, and Order Tower interactions. Answers lock immediately on the server, survive refresh, and are graded only from saved responses.
 
 ## Security Notes
 

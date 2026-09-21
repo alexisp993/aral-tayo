@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
 import { getPracticeProgress } from "@/lib/practice-progress";
-import { publicQuestion, selectQuizQuestions } from "@/lib/quiz";
+import { findQuestion, publicQuestion, selectQuizQuestions } from "@/lib/quiz";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const bodySchema = z.object({
@@ -36,8 +36,13 @@ export async function POST(request: Request) {
         { status: 403 },
       );
 
-    const questions = selectQuizQuestions(5);
     const admin = createAdminClient();
+    const { data: existing } = await admin.from("quiz_sessions").select("id,question_ids").eq("student_id", user.id).eq("lesson_slug", parsed.data.lessonSlug).eq("status", "in_progress").order("started_at", { ascending: false }).limit(1).maybeSingle();
+    if (existing) {
+      const ids = Array.isArray(existing.question_ids) ? existing.question_ids.filter((id): id is string => typeof id === "string") : [];
+      return NextResponse.json({ sessionId: existing.id, questions: ids.map(findQuestion).filter((question): question is NonNullable<typeof question> => Boolean(question)).map(publicQuestion) });
+    }
+    const questions = selectQuizQuestions(5);
     const { data, error } = await admin
       .from("quiz_sessions")
       .insert({

@@ -176,6 +176,10 @@ Desktop navigation uses extra-bold labels and line icons. The active destination
 
 Hearts, streak, and points appear as compact tactile chips. Progress uses a dark outlined track and Success Green fill. Correct feedback uses Mint; guided retry uses Yellow; final results use stars and account-linked XP.
 
+### Fraction Quest games
+
+Five visible checkpoint nodes show session progress without exposing outcomes. Bridge Builder uses large button planks, Treasure Match uses labeled selects with unique destinations, and Order Tower uses explicit Move up/Move down controls. Each mechanism is keyboard and touch operable; brief placement, unlock, reorder, and checkpoint motion is removed for reduced-motion preferences.
+
 ## Do's and Don'ts
 
 ### Do:

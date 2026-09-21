@@ -2,12 +2,17 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
-import { gradeQuiz } from "@/lib/quiz";
+import {
+  findQuestion,
+  gradeQuiz,
+  isAnswerShape,
+  type QuizAnswer,
+} from "@/lib/quiz";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const bodySchema = z.object({
   sessionId: z.uuid(),
-  answers: z.record(z.string(), z.string()),
+  answers: z.record(z.string(), z.unknown()).optional(),
 });
 
 export async function POST(request: Request) {
@@ -28,7 +33,9 @@ export async function POST(request: Request) {
   const admin = createAdminClient();
   const { data: session, error: sessionError } = await admin
     .from("quiz_sessions")
-    .select("id,student_id,question_ids,status,score,correct_count,xp_awarded")
+    .select(
+      "id,student_id,question_ids,answers_json,status,score,correct_count,xp_awarded",
+    )
     .eq("id", parsed.data.sessionId)
     .eq("student_id", user.id)
     .maybeSingle();
@@ -49,22 +56,28 @@ export async function POST(request: Request) {
   const questionIds = Array.isArray(session.question_ids)
     ? session.question_ids.filter((id): id is string => typeof id === "string")
     : [];
+  const saved = (session.answers_json ?? {}) as Record<string, QuizAnswer>;
+  const legacy = (parsed.data.answers ?? {}) as Record<string, QuizAnswer>;
+  const answers = { ...legacy, ...saved };
   if (
     questionIds.length === 0 ||
-    questionIds.some((id) => !parsed.data.answers[id])
+    questionIds.some((id) => {
+      const question = findQuestion(id);
+      return !question || !isAnswerShape(question, answers[id]);
+    })
   )
     return NextResponse.json(
       { error: "Answer every question before submitting." },
       { status: 400 },
     );
 
-  const result = gradeQuiz(questionIds, parsed.data.answers);
+  const result = gradeQuiz(questionIds, answers);
   const { data: applied, error: completionError } = await admin.rpc(
     "complete_quiz_session",
     {
       p_session_id: session.id,
       p_student_id: user.id,
-      p_answers: parsed.data.answers,
+      p_answers: answers,
       p_score: result.score,
       p_correct_count: result.correctCount,
       p_xp: result.xp,

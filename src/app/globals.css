@@ -100,6 +100,19 @@ select {
   animation: game-pop 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.game-choice[aria-pressed="true"] {
+  animation: plank-place 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes plank-place {
+  from {
+    transform: translateY(-5px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes game-pop {
   from {
     transform: translateY(8px) scale(0.98);
@@ -113,8 +126,48 @@ select {
   }
 }
 
+.treasure-unlocked {
+  animation: treasure-unlock 240ms ease-out;
+}
+.tower-reordered {
+  animation: tower-reorder 180ms ease-out;
+}
+.checkpoint-current {
+  animation: checkpoint-arrive 220ms ease-out;
+}
+@keyframes treasure-unlock {
+  from {
+    filter: brightness(1.18);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+@keyframes tower-reorder {
+  from {
+    transform: translateX(6px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes checkpoint-arrive {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .game-celebrate {
+  .game-celebrate,
+  .game-choice[aria-pressed="true"] {
+    animation: none;
+  }
+  .treasure-unlocked,
+  .tower-reordered,
+  .checkpoint-current {
     animation: none;
   }
 }
