@@ -190,7 +190,8 @@ export function LearnMode({
   lessonSlug: string;
   blocks: LearnBlock[];
 }) {
-  const { progress, completeStep } = useLessonProgress(lessonSlug);
+  const { progress, completeStep, savingStep, error } =
+    useLessonProgress(lessonSlug);
 
   return (
     <>
@@ -259,16 +260,25 @@ export function LearnMode({
               flashcards.
             </p>
           </div>
-          {progress.learnCompleted ? (
+          {progress.learnCompleted && savingStep !== "learn" ? (
             <LinkButton href={`/student/lessons/${lessonSlug}/flashcards`}>
               Continue to flashcards <ArrowRight aria-hidden="true" size={18} />
             </LinkButton>
           ) : (
-            <Button onClick={() => completeStep("learn")}>
-              Complete Learn <Check aria-hidden="true" size={18} />
+            <Button
+              disabled={savingStep === "learn"}
+              onClick={() => void completeStep("learn")}
+            >
+              {savingStep === "learn" ? "Saving…" : "Complete Learn"}
+              <Check aria-hidden="true" size={18} />
             </Button>
           )}
         </Card>
+        {error && (
+          <p className="font-bold text-[#8b261f]" role="alert">
+            {error}
+          </p>
+        )}
       </div>
     </>
   );
@@ -283,7 +293,8 @@ export function FlashcardsMode({
 }) {
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const { progress, completeStep } = useLessonProgress(lessonSlug);
+  const { progress, completeStep, savingStep, error } =
+    useLessonProgress(lessonSlug);
   const card = cards[index];
   const isLast = index === cards.length - 1;
 
@@ -341,13 +352,19 @@ export function FlashcardsMode({
             <ArrowLeft aria-hidden="true" size={18} /> Previous
           </Button>
           {isLast ? (
-            progress.flashcardsCompleted ? (
+            progress.flashcardsCompleted && savingStep !== "flashcards" ? (
               <LinkButton href={`/student/lessons/${lessonSlug}`}>
                 Back to lesson <Check aria-hidden="true" size={18} />
               </LinkButton>
             ) : (
-              <Button onClick={() => completeStep("flashcards")}>
-                Complete flashcards <Check aria-hidden="true" size={18} />
+              <Button
+                disabled={savingStep === "flashcards"}
+                onClick={() => void completeStep("flashcards")}
+              >
+                {savingStep === "flashcards"
+                  ? "Saving…"
+                  : "Complete flashcards"}
+                <Check aria-hidden="true" size={18} />
               </Button>
             )
           ) : (
@@ -356,6 +373,11 @@ export function FlashcardsMode({
             </Button>
           )}
         </div>
+        {error && (
+          <p className="mt-4 font-bold text-[#8b261f]" role="alert">
+            {error}
+          </p>
+        )}
       </div>
     </>
   );

@@ -17,7 +17,7 @@ Aral Tayo is a Philippine learning platform for students. Its student experience
 - The student shell has Home, Subjects, Progress, Achievements, and AI Tutor as primary destinations.
 - Phase 1 established the shared visual primitives, responsive navigation, and app shell.
 - Phase 2 adds the seed-backed Home, Subjects, Mathematics, and Adding Fractions overview route.
-- Learn and Flashcards completion remains lightweight browser progress for the current lesson.
+- All four lesson steps are account-linked: Learn and Flashcards completion sync through Supabase alongside authenticated Practice attempts and Quiz completion.
 - Authenticated Practice attempts are validated and scored on the server, then persisted in Supabase.
 - Quiz access requires at least 80% distinct correct Practice activities from real saved attempts.
 - The Adding Fractions quiz creates randomized five-question sessions, persists results, and awards account-linked XP, streaks, and achievements.

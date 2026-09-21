@@ -50,7 +50,7 @@ Add the Supabase URL, publishable key, and secret/service-role key to `.env.loca
 
 **Adding Fractions vertical slice.** The responsive student shell, Home, Subjects, lesson overview, Learn, Flashcards, authenticated Practice, server-enforced Quiz gating, randomized Quiz sessions, XP, streaks, achievements, and leaderboard foundation are implemented. AI Tutor behavior and AI-generated curriculum remain future work.
 
-Learn and Flashcards completion remains stored in the current browser. Practice attempts, quiz completion, quiz results, XP, streaks, and achievements are tied to the authenticated account and stored in Supabase.
+All four lesson steps are tied to the authenticated account and stored in Supabase. Learn and Flashcards completion, Practice attempts, and quiz completion sync across a student's devices; quiz results, XP, streaks, and achievements are also account-linked.
 
 The Quiz unlocks after at least six of the seven distinct Practice activities have been answered correctly across saved attempts.
 

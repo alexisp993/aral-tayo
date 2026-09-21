@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { createClient } from "@/lib/supabase/client";
+
 export type LessonStep = "learn" | "flashcards";
 
 export type LessonProgress = Record<`${LessonStep}Completed`, boolean> & {
@@ -38,19 +40,48 @@ function readProgress(lessonSlug: string): LessonProgress {
 
 export function useLessonProgress(lessonSlug: string) {
   const [progress, setProgress] = useState<LessonProgress>(emptyProgress);
+  const [savingStep, setSavingStep] = useState<LessonStep | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     const sync = async () => {
-      const local = readProgress(lessonSlug);
       try {
-        const response = await fetch(`/api/progress/${lessonSlug}`);
-        const account = response.ok
-          ? ((await response.json()) as Partial<LessonProgress>)
-          : {};
-        if (active) setProgress({ ...local, ...account });
+        const {
+          data: { session },
+        } = await createClient().auth.getSession();
+        const response = await fetch(`/api/progress/${lessonSlug}`, {
+          headers: session
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {},
+        });
+        if (!response.ok) throw new Error("Progress unavailable");
+        const account = (await response.json()) as Partial<LessonProgress>;
+        const legacy = readProgress(lessonSlug);
+        const missingSteps = (["learn", "flashcards"] as const).filter(
+          (step) => legacy[`${step}Completed`] && !account[`${step}Completed`],
+        );
+        let synced = account;
+        for (const step of missingSteps) {
+          const migration = await fetch(`/api/progress/${lessonSlug}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(session
+                ? { Authorization: `Bearer ${session.access_token}` }
+                : {}),
+            },
+            body: JSON.stringify({ step }),
+          });
+          if (!migration.ok)
+            throw new Error("Legacy progress migration failed");
+          synced = (await migration.json()) as Partial<LessonProgress>;
+        }
+        if (legacy.learnCompleted || legacy.flashcardsCompleted)
+          window.localStorage.removeItem(storageKey(lessonSlug));
+        if (active) setProgress({ ...emptyProgress, ...synced });
       } catch {
-        if (active) setProgress(local);
+        if (active) setProgress(readProgress(lessonSlug));
       }
     };
     void sync();
@@ -66,22 +97,44 @@ export function useLessonProgress(lessonSlug: string) {
   }, [lessonSlug]);
 
   const completeStep = useCallback(
-    (step: LessonStep) => {
-      const local = readProgress(lessonSlug);
-      const next = { ...local, [`${step}Completed`]: true };
+    async (step: LessonStep) => {
+      const previous = progress;
+      const optimistic = { ...previous, [`${step}Completed`]: true };
+      setSavingStep(step);
+      setError("");
+      setProgress(optimistic);
       try {
-        window.localStorage.setItem(
-          storageKey(lessonSlug),
-          JSON.stringify(next),
-        );
+        const {
+          data: { session },
+        } = await createClient().auth.getSession();
+        const response = await fetch(`/api/progress/${lessonSlug}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(session
+              ? { Authorization: `Bearer ${session.access_token}` }
+              : {}),
+          },
+          body: JSON.stringify({ step }),
+        });
+        const body = (await response.json()) as Partial<LessonProgress> & {
+          error?: string;
+        };
+        if (!response.ok)
+          throw new Error(body.error ?? "Could not save progress.");
+        setProgress((current) => ({ ...current, ...body }));
+        window.dispatchEvent(new Event(accountProgressEvent));
+        return true;
       } catch {
-        // Keep the current session usable when storage is blocked or full.
+        setProgress(previous);
+        setError("We could not save your progress. Please try again.");
+        return false;
+      } finally {
+        setSavingStep(null);
       }
-      setProgress(next);
-      window.dispatchEvent(new Event(progressEvent));
     },
-    [lessonSlug],
+    [lessonSlug, progress],
   );
 
-  return { progress, completeStep };
+  return { progress, completeStep, savingStep, error };
 }
