@@ -1,0 +1,120 @@
+@import "@fontsource-variable/fredoka";
+@import "@fontsource-variable/nunito-sans";
+@import "tailwindcss";
+
+:root {
+  --font-body: "Nunito Sans Variable";
+  --font-display: "Fredoka Variable";
+}
+
+@theme {
+  --color-canvas: #f7f3e8;
+  --color-ink: #17150f;
+  --color-ink-muted: #5d574a;
+  --color-brand: #d5453c;
+  --color-brand-strong: #b9322a;
+  --color-brand-soft: #ffe8a3;
+  --color-sun: #b87d00;
+  --color-sun-soft: #fff1b8;
+  --color-coral: #d5453c;
+  --shadow-card: 6px 7px 0 #17150f, 10px 12px 20px rgba(23, 21, 15, 0.1);
+  --font-sans: var(--font-body), "Trebuchet MS", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f7f3e8;
+  color: #17150f;
+  font-family: var(--font-body), "Trebuchet MS", sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #ffd95f;
+  color: #17150f;
+}
+
+:focus-visible {
+  outline-color: #d5453c;
+}
+
+.game-display {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.game-paper {
+  border: 2px solid #17150f;
+  background: #fffdf4;
+  box-shadow:
+    7px 8px 0 #17150f,
+    11px 13px 22px rgba(23, 21, 15, 0.13);
+}
+
+.game-chip {
+  border: 2px solid #17150f;
+  box-shadow:
+    3px 4px 0 #17150f,
+    5px 7px 12px rgba(23, 21, 15, 0.1);
+}
+
+.game-choice {
+  border: 2px solid #17150f;
+  background: #fffef9;
+  box-shadow:
+    3px 4px 0 #17150f,
+    5px 7px 12px rgba(23, 21, 15, 0.08);
+  transition:
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 150ms ease-out;
+}
+
+.game-choice:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow:
+    4px 5px 0 #17150f,
+    7px 9px 14px rgba(23, 21, 15, 0.1);
+}
+
+.game-choice:active:not(:disabled),
+.game-choice[data-selected="true"] {
+  transform: translate(2px, 3px);
+  box-shadow:
+    1px 1px 0 #17150f,
+    3px 4px 7px rgba(23, 21, 15, 0.09);
+}
+
+.game-celebrate {
+  animation: game-pop 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes game-pop {
+  from {
+    transform: translateY(8px) scale(0.98);
+    filter: blur(3px);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-celebrate {
+    animation: none;
+  }
+}

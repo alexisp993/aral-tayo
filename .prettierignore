@@ -1,0 +1,10 @@
+.next
+node_modules
+coverage
+playwright-report
+test-results
+mockups
+docs
+seed
+TARALEARN_*_REVIEW*.md
+package-lock.json

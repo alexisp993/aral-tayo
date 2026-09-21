@@ -1,0 +1,944 @@
+{
+  "schema_version": 2,
+  "status": "prototype_seed",
+  "validation_note": "Prototype engineering content. Not official DepEd/MATATAG validation.",
+  "curriculum": {
+    "name": "Philippine Curriculum",
+    "version": "prototype",
+    "jurisdiction": "Philippines"
+  },
+  "grade": {
+    "name": "Grade 5",
+    "ordinal": 5
+  },
+  "subject": {
+    "name": "Mathematics",
+    "slug": "mathematics",
+    "theme_key": "math"
+  },
+  "quarter": {
+    "name": "Quarter 1",
+    "ordinal": 1
+  },
+  "unit": {
+    "title": "Fractions",
+    "slug": "fractions",
+    "ordinal": 4
+  },
+  "lesson": {
+    "title": "Adding Fractions",
+    "slug": "adding-fractions",
+    "version": 1,
+    "summary": "Learn to add fractions with like and unlike denominators using visual models, equivalent fractions, and common denominators.",
+    "estimated_minutes": 25,
+    "gating": {
+      "flashcards_available": "immediately",
+      "learn_required_for_practice": true,
+      "practice_required_for_quiz": true,
+      "minimum_practice_completion_percent": 80
+    },
+    "competencies": [
+      {
+        "key": "fraction-parts",
+        "statement": "Identify the numerator and denominator of a fraction.",
+        "weight": 0.1
+      },
+      {
+        "key": "equivalent-fractions",
+        "statement": "Recognize and generate simple equivalent fractions.",
+        "weight": 0.2
+      },
+      {
+        "key": "add-like-fractions",
+        "statement": "Add fractions with the same denominator.",
+        "weight": 0.25
+      },
+      {
+        "key": "add-unlike-fractions",
+        "statement": "Add fractions with different denominators by using a common denominator.",
+        "weight": 0.35
+      },
+      {
+        "key": "fraction-word-problems",
+        "statement": "Solve simple real-life problems involving addition of fractions.",
+        "weight": 0.1
+      }
+    ],
+    "learn_blocks": [
+      {
+        "type": "intro",
+        "ordinal": 1,
+        "title": "What is a fraction?",
+        "body": "A fraction shows equal parts of a whole. The numerator tells how many parts we have, while the denominator tells how many equal parts make the whole."
+      },
+      {
+        "type": "worked_example",
+        "ordinal": 2,
+        "title": "Adding like fractions",
+        "body": "When denominators are the same, keep the denominator and add the numerators.",
+        "example": {
+          "expression": "2/4 + 1/4",
+          "steps": [
+            "The denominators are both 4.",
+            "Add the numerators: 2 + 1 = 3.",
+            "Keep the denominator 4."
+          ],
+          "answer": "3/4"
+        }
+      },
+      {
+        "type": "key_takeaway",
+        "ordinal": 3,
+        "title": "Remember",
+        "body": "For like fractions: add the numerators and keep the common denominator."
+      },
+      {
+        "type": "worked_example",
+        "ordinal": 4,
+        "title": "Adding unlike fractions",
+        "body": "When denominators are different, first rewrite the fractions using a common denominator.",
+        "example": {
+          "expression": "1/2 + 1/4",
+          "steps": [
+            "A common denominator is 4.",
+            "Rewrite 1/2 as 2/4.",
+            "Add 2/4 + 1/4 = 3/4."
+          ],
+          "answer": "3/4"
+        }
+      },
+      {
+        "type": "real_life",
+        "ordinal": 5,
+        "title": "Pizza example",
+        "body": "If Alex eats 1/4 of a pizza and later eats another 2/4, he has eaten 3/4 of the pizza in total."
+      }
+    ],
+    "flashcards": [
+      {
+        "ordinal": 1,
+        "front": "Fraction",
+        "back": "A number that represents part of a whole or group."
+      },
+      {
+        "ordinal": 2,
+        "front": "Numerator",
+        "back": "The top number. It tells how many parts are considered."
+      },
+      {
+        "ordinal": 3,
+        "front": "Denominator",
+        "back": "The bottom number. It tells how many equal parts make the whole."
+      },
+      {
+        "ordinal": 4,
+        "front": "Equivalent fractions",
+        "back": "Fractions that look different but represent the same value, such as 1/2 and 2/4."
+      },
+      {
+        "ordinal": 5,
+        "front": "Common denominator",
+        "back": "A denominator shared by fractions so they can be combined or compared."
+      },
+      {
+        "ordinal": 6,
+        "front": "Like fractions",
+        "back": "Fractions with the same denominator."
+      },
+      {
+        "ordinal": 7,
+        "front": "Unlike fractions",
+        "back": "Fractions with different denominators."
+      },
+      {
+        "ordinal": 8,
+        "front": "1/2 = ?/4",
+        "back": "2/4"
+      }
+    ],
+    "practice": {
+      "mode": "practice",
+      "set_reward_xp": 20,
+      "settings": {
+        "max_guided_retries": 2,
+        "allow_hints": true,
+        "allow_ai_help": true,
+        "partial_credit": false
+      },
+      "activities": [
+        {
+          "id": "af-pr-01",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 1,
+          "competency_keys": [
+            "add-like-fractions"
+          ],
+          "difficulty": "beginner",
+          "instruction": "Choose the correct sum.",
+          "config": {
+            "prompt": "What is 1/5 + 2/5?",
+            "options": [
+              {
+                "id": "a",
+                "label": "2/10"
+              },
+              {
+                "id": "b",
+                "label": "3/5"
+              },
+              {
+                "id": "c",
+                "label": "3/10"
+              },
+              {
+                "id": "d",
+                "label": "2/5"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "b"
+          },
+          "hint": "The denominators are already the same. Add the numerators and keep 5.",
+          "explanation": "1 + 2 = 3, and the denominator stays 5, so the answer is 3/5."
+        },
+        {
+          "id": "af-pr-02",
+          "version": 1,
+          "type": "drag_drop",
+          "ordinal": 2,
+          "competency_keys": [
+            "add-like-fractions"
+          ],
+          "difficulty": "beginner",
+          "instruction": "Choose the correct fraction for the answer box.",
+          "config": {
+            "expression": "2/4 + 1/4 = ?",
+            "items": [
+              {
+                "id": "i1",
+                "label": "1/4"
+              },
+              {
+                "id": "i2",
+                "label": "2/4"
+              },
+              {
+                "id": "i3",
+                "label": "3/4"
+              },
+              {
+                "id": "i4",
+                "label": "4/4"
+              }
+            ],
+            "drop_zones": [
+              {
+                "id": "answer",
+                "label": "Answer"
+              }
+            ]
+          },
+          "answer_key": {
+            "placements": {
+              "answer": "i3"
+            }
+          },
+          "hint": "The denominators are the same. Add 2 + 1.",
+          "explanation": "2/4 + 1/4 = 3/4."
+        },
+        {
+          "id": "af-pr-03",
+          "version": 1,
+          "type": "match_pairs",
+          "ordinal": 3,
+          "competency_keys": [
+            "equivalent-fractions"
+          ],
+          "difficulty": "beginner",
+          "instruction": "Match each fraction with an equivalent fraction.",
+          "config": {
+            "left": [
+              {
+                "id": "l1",
+                "label": "1/2"
+              },
+              {
+                "id": "l2",
+                "label": "1/3"
+              },
+              {
+                "id": "l3",
+                "label": "3/4"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "label": "6/8"
+              },
+              {
+                "id": "r2",
+                "label": "2/4"
+              },
+              {
+                "id": "r3",
+                "label": "2/6"
+              }
+            ]
+          },
+          "answer_key": {
+            "pairs": [
+              [
+                "l1",
+                "r2"
+              ],
+              [
+                "l2",
+                "r3"
+              ],
+              [
+                "l3",
+                "r1"
+              ]
+            ]
+          },
+          "hint": "Multiply numerator and denominator by the same number.",
+          "explanation": "1/2 = 2/4, 1/3 = 2/6, and 3/4 = 6/8."
+        },
+        {
+          "id": "af-pr-04",
+          "version": 1,
+          "type": "sort_categorize",
+          "ordinal": 4,
+          "competency_keys": [
+            "fraction-parts"
+          ],
+          "difficulty": "beginner",
+          "instruction": "Sort each fraction by its denominator.",
+          "config": {
+            "categories": [
+              {
+                "id": "d2",
+                "label": "Denominator = 2"
+              },
+              {
+                "id": "d3",
+                "label": "Denominator = 3"
+              },
+              {
+                "id": "d4",
+                "label": "Denominator = 4"
+              }
+            ],
+            "items": [
+              {
+                "id": "s1",
+                "label": "1/2"
+              },
+              {
+                "id": "s2",
+                "label": "2/3"
+              },
+              {
+                "id": "s3",
+                "label": "1/4"
+              },
+              {
+                "id": "s4",
+                "label": "2/4"
+              },
+              {
+                "id": "s5",
+                "label": "1/3"
+              },
+              {
+                "id": "s6",
+                "label": "2/2"
+              },
+              {
+                "id": "s7",
+                "label": "3/4"
+              }
+            ]
+          },
+          "answer_key": {
+            "mapping": {
+              "s1": "d2",
+              "s6": "d2",
+              "s2": "d3",
+              "s5": "d3",
+              "s3": "d4",
+              "s4": "d4",
+              "s7": "d4"
+            }
+          },
+          "hint": "Look at the bottom number.",
+          "explanation": "The denominator is the bottom number."
+        },
+        {
+          "id": "af-pr-05",
+          "version": 1,
+          "type": "hotspot",
+          "ordinal": 5,
+          "competency_keys": [
+            "fraction-parts"
+          ],
+          "difficulty": "beginner",
+          "instruction": "Select 3 of the 8 equal parts to show 3/8.",
+          "config": {
+            "visual": {
+              "kind": "fraction_circle",
+              "parts": 8,
+              "regions": [
+                {
+                  "id": "part-1",
+                  "label": "Part 1 of 8"
+                },
+                {
+                  "id": "part-2",
+                  "label": "Part 2 of 8"
+                },
+                {
+                  "id": "part-3",
+                  "label": "Part 3 of 8"
+                },
+                {
+                  "id": "part-4",
+                  "label": "Part 4 of 8"
+                },
+                {
+                  "id": "part-5",
+                  "label": "Part 5 of 8"
+                },
+                {
+                  "id": "part-6",
+                  "label": "Part 6 of 8"
+                },
+                {
+                  "id": "part-7",
+                  "label": "Part 7 of 8"
+                },
+                {
+                  "id": "part-8",
+                  "label": "Part 8 of 8"
+                }
+              ]
+            },
+            "selection": {
+              "min": 3,
+              "max": 3,
+              "rule": "selection_count"
+            }
+          },
+          "answer_key": {
+            "selected_count": 3
+          },
+          "hint": "The numerator 3 means select 3 parts.",
+          "explanation": "Any 3 of the 8 equal parts represent 3/8."
+        },
+        {
+          "id": "af-pr-06",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 6,
+          "competency_keys": [
+            "add-unlike-fractions"
+          ],
+          "difficulty": "learning",
+          "instruction": "Choose the correct sum.",
+          "config": {
+            "prompt": "What is 1/2 + 1/4?",
+            "options": [
+              {
+                "id": "a",
+                "label": "2/6"
+              },
+              {
+                "id": "b",
+                "label": "2/4"
+              },
+              {
+                "id": "c",
+                "label": "3/4"
+              },
+              {
+                "id": "d",
+                "label": "1/6"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "c"
+          },
+          "hint": "Rewrite 1/2 using denominator 4.",
+          "explanation": "1/2 = 2/4. Then 2/4 + 1/4 = 3/4."
+        },
+        {
+          "id": "af-pr-07",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 7,
+          "competency_keys": [
+            "fraction-word-problems",
+            "add-like-fractions"
+          ],
+          "difficulty": "learning",
+          "instruction": "Solve the story problem.",
+          "config": {
+            "prompt": "Mia drank 2/8 of a bottle in the morning and 3/8 in the afternoon. How much altogether?",
+            "options": [
+              {
+                "id": "a",
+                "label": "5/8"
+              },
+              {
+                "id": "b",
+                "label": "5/16"
+              },
+              {
+                "id": "c",
+                "label": "1/8"
+              },
+              {
+                "id": "d",
+                "label": "6/8"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "a"
+          },
+          "hint": "The denominators are the same.",
+          "explanation": "2/8 + 3/8 = 5/8."
+        }
+      ]
+    },
+    "quiz": {
+      "id": "adding-fractions-quiz-01",
+      "version": 1,
+      "title": "Adding Fractions Quiz",
+      "settings": {
+        "graded": true,
+        "reveal_correctness_during_quiz": false,
+        "allow_hints": false,
+        "ai_help_level": "quiz_safe",
+        "timer_enabled": false,
+        "timer_seconds": null,
+        "partial_credit": false,
+        "passing_percent": 70
+      },
+      "questions": [
+        {
+          "id": "af-q-01",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 1,
+          "competency_keys": [
+            "add-like-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "What is 2/4 + 1/4?",
+            "options": [
+              {
+                "id": "a",
+                "label": "1/4"
+              },
+              {
+                "id": "b",
+                "label": "2/4"
+              },
+              {
+                "id": "c",
+                "label": "3/4"
+              },
+              {
+                "id": "d",
+                "label": "4/4"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "c"
+          },
+          "explanation": "Add numerators and keep denominator 4."
+        },
+        {
+          "id": "af-q-02",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 2,
+          "competency_keys": [
+            "add-like-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "What is 1/6 + 2/6?",
+            "options": [
+              {
+                "id": "a",
+                "label": "3/6"
+              },
+              {
+                "id": "b",
+                "label": "3/12"
+              },
+              {
+                "id": "c",
+                "label": "2/6"
+              },
+              {
+                "id": "d",
+                "label": "1/3"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "a"
+          },
+          "explanation": "1 + 2 = 3; keep denominator 6."
+        },
+        {
+          "id": "af-q-03",
+          "version": 1,
+          "type": "drag_drop",
+          "ordinal": 3,
+          "competency_keys": [
+            "add-like-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "expression": "3/8 + 2/8 = ?",
+            "items": [
+              {
+                "id": "a",
+                "label": "5/8"
+              },
+              {
+                "id": "b",
+                "label": "5/16"
+              },
+              {
+                "id": "c",
+                "label": "1/8"
+              },
+              {
+                "id": "d",
+                "label": "6/8"
+              }
+            ],
+            "drop_zones": [
+              {
+                "id": "answer",
+                "label": "Answer"
+              }
+            ]
+          },
+          "answer_key": {
+            "placements": {
+              "answer": "a"
+            }
+          },
+          "explanation": "3/8 + 2/8 = 5/8."
+        },
+        {
+          "id": "af-q-04",
+          "version": 1,
+          "type": "match_pairs",
+          "ordinal": 4,
+          "competency_keys": [
+            "equivalent-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "left": [
+              {
+                "id": "l1",
+                "label": "1/2"
+              },
+              {
+                "id": "l2",
+                "label": "2/3"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "label": "4/6"
+              },
+              {
+                "id": "r2",
+                "label": "2/4"
+              }
+            ]
+          },
+          "answer_key": {
+            "pairs": [
+              [
+                "l1",
+                "r2"
+              ],
+              [
+                "l2",
+                "r1"
+              ]
+            ]
+          },
+          "explanation": "Equivalent fractions represent the same value."
+        },
+        {
+          "id": "af-q-05",
+          "version": 1,
+          "type": "hotspot",
+          "ordinal": 5,
+          "competency_keys": [
+            "fraction-parts"
+          ],
+          "points": 1,
+          "config": {
+            "visual": {
+              "kind": "fraction_circle",
+              "parts": 8,
+              "regions": [
+                {
+                  "id": "part-1",
+                  "label": "Part 1 of 8"
+                },
+                {
+                  "id": "part-2",
+                  "label": "Part 2 of 8"
+                },
+                {
+                  "id": "part-3",
+                  "label": "Part 3 of 8"
+                },
+                {
+                  "id": "part-4",
+                  "label": "Part 4 of 8"
+                },
+                {
+                  "id": "part-5",
+                  "label": "Part 5 of 8"
+                },
+                {
+                  "id": "part-6",
+                  "label": "Part 6 of 8"
+                },
+                {
+                  "id": "part-7",
+                  "label": "Part 7 of 8"
+                },
+                {
+                  "id": "part-8",
+                  "label": "Part 8 of 8"
+                }
+              ]
+            },
+            "prompt": "Show 3/8.",
+            "selection": {
+              "min": 3,
+              "max": 3,
+              "rule": "selection_count"
+            }
+          },
+          "answer_key": {
+            "selected_count": 3
+          },
+          "explanation": "3/8 means 3 selected parts out of 8 equal parts."
+        },
+        {
+          "id": "af-q-06",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 6,
+          "competency_keys": [
+            "add-unlike-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "What is 1/2 + 1/4?",
+            "options": [
+              {
+                "id": "a",
+                "label": "2/6"
+              },
+              {
+                "id": "b",
+                "label": "3/4"
+              },
+              {
+                "id": "c",
+                "label": "1/6"
+              },
+              {
+                "id": "d",
+                "label": "2/4"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "b"
+          },
+          "explanation": "1/2 = 2/4; 2/4 + 1/4 = 3/4."
+        },
+        {
+          "id": "af-q-07",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 7,
+          "competency_keys": [
+            "add-unlike-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "What is 1/3 + 1/6?",
+            "options": [
+              {
+                "id": "a",
+                "label": "2/9"
+              },
+              {
+                "id": "b",
+                "label": "2/6"
+              },
+              {
+                "id": "c",
+                "label": "1/2"
+              },
+              {
+                "id": "d",
+                "label": "1/9"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "c"
+          },
+          "explanation": "1/3 = 2/6; 2/6 + 1/6 = 3/6 = 1/2."
+        },
+        {
+          "id": "af-q-08",
+          "version": 1,
+          "type": "sort_categorize",
+          "ordinal": 8,
+          "competency_keys": [
+            "fraction-parts"
+          ],
+          "points": 1,
+          "config": {
+            "categories": [
+              {
+                "id": "like",
+                "label": "Like denominators"
+              },
+              {
+                "id": "unlike",
+                "label": "Unlike denominators"
+              }
+            ],
+            "items": [
+              {
+                "id": "i1",
+                "label": "1/4 + 2/4"
+              },
+              {
+                "id": "i2",
+                "label": "1/2 + 1/4"
+              },
+              {
+                "id": "i3",
+                "label": "2/5 + 1/5"
+              },
+              {
+                "id": "i4",
+                "label": "1/3 + 1/6"
+              }
+            ]
+          },
+          "answer_key": {
+            "mapping": {
+              "i1": "like",
+              "i2": "unlike",
+              "i3": "like",
+              "i4": "unlike"
+            }
+          },
+          "explanation": "Like fractions have the same denominator."
+        },
+        {
+          "id": "af-q-09",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 9,
+          "competency_keys": [
+            "fraction-word-problems",
+            "add-like-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "Ana read 2/10 of a book Monday and 4/10 Tuesday. How much in all?",
+            "options": [
+              {
+                "id": "a",
+                "label": "6/10"
+              },
+              {
+                "id": "b",
+                "label": "6/20"
+              },
+              {
+                "id": "c",
+                "label": "2/10"
+              },
+              {
+                "id": "d",
+                "label": "8/10"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "a"
+          },
+          "explanation": "2/10 + 4/10 = 6/10."
+        },
+        {
+          "id": "af-q-10",
+          "version": 1,
+          "type": "multiple_choice",
+          "ordinal": 10,
+          "competency_keys": [
+            "add-unlike-fractions"
+          ],
+          "points": 1,
+          "config": {
+            "prompt": "What is 1/4 + 1/2?",
+            "options": [
+              {
+                "id": "a",
+                "label": "2/6"
+              },
+              {
+                "id": "b",
+                "label": "2/4"
+              },
+              {
+                "id": "c",
+                "label": "3/4"
+              },
+              {
+                "id": "d",
+                "label": "1/8"
+              }
+            ]
+          },
+          "answer_key": {
+            "option_id": "c"
+          },
+          "explanation": "1/2 = 2/4; 1/4 + 2/4 = 3/4."
+        }
+      ]
+    }
+  }
+}

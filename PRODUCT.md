@@ -1,0 +1,25 @@
+<!-- impeccable:product-schema 1 -->
+
+---
+
+name: Aral Tayo
+platform: web
+stack: Next.js, React, TypeScript, Tailwind CSS
+---
+
+# Aral Tayo
+
+Aral Tayo is a Philippine learning platform for students. Its student experience should feel encouraging, clear, and age-appropriate while supporting learning across school subjects.
+
+## Confirmed product constraints
+
+- The product serves student learning and uses Philippine-inspired visual accents.
+- The student shell has Home, Subjects, Progress, Achievements, and AI Tutor as primary destinations.
+- Phase 1 established the shared visual primitives, responsive navigation, and app shell.
+- Phase 2 adds the seed-backed Home, Subjects, Mathematics, and Adding Fractions overview route.
+- Learn and Flashcards completion remains lightweight browser progress for the current lesson.
+- Authenticated Practice attempts are validated and scored on the server, then persisted in Supabase.
+- Quiz access requires at least 80% distinct correct Practice activities from real saved attempts.
+- The Adding Fractions quiz creates randomized five-question sessions, persists results, and awards account-linked XP, streaks, and achievements.
+- Progress and Achievements provide the first learner-statistics and leaderboard surfaces.
+- AI Tutor behavior and AI-generated curriculum remain future scope.

@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taralearn.local/schemas/activity-seed.schema.json",
+  "title": "TaraLearn Lesson Seed v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "curriculum",
+    "grade",
+    "subject",
+    "quarter",
+    "unit",
+    "lesson"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "status": {
+      "const": "prototype_seed"
+    },
+    "curriculum": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "jurisdiction"
+      ]
+    },
+    "grade": {
+      "type": "object",
+      "required": [
+        "name",
+        "ordinal"
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "name",
+        "slug"
+      ]
+    },
+    "quarter": {
+      "type": "object",
+      "required": [
+        "name",
+        "ordinal"
+      ]
+    },
+    "unit": {
+      "type": "object",
+      "required": [
+        "title",
+        "slug",
+        "ordinal"
+      ]
+    },
+    "lesson": {
+      "type": "object",
+      "required": [
+        "title",
+        "slug",
+        "version",
+        "competencies",
+        "learn_blocks",
+        "flashcards",
+        "practice",
+        "quiz"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "competencies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "statement",
+              "weight"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "weight": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "practice": {
+          "type": "object",
+          "required": [
+            "mode",
+            "set_reward_xp",
+            "settings",
+            "activities"
+          ],
+          "properties": {
+            "mode": {
+              "const": "practice"
+            },
+            "set_reward_xp": {
+              "const": 20
+            },
+            "activities": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/activity"
+              }
+            }
+          }
+        },
+        "quiz": {
+          "type": "object",
+          "required": [
+            "id",
+            "version",
+            "settings",
+            "questions"
+          ],
+          "properties": {
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "settings": {
+              "type": "object",
+              "required": [
+                "graded",
+                "reveal_correctness_during_quiz",
+                "allow_hints",
+                "ai_help_level",
+                "timer_enabled"
+              ],
+              "properties": {
+                "graded": {
+                  "const": true
+                },
+                "reveal_correctness_during_quiz": {
+                  "const": false
+                },
+                "allow_hints": {
+                  "const": false
+                },
+                "ai_help_level": {
+                  "const": "quiz_safe"
+                },
+                "timer_enabled": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "questions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/quizActivity"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "baseActivity": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "type",
+        "ordinal",
+        "competency_keys",
+        "config",
+        "answer_key"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "type": {
+          "enum": [
+            "multiple_choice",
+            "drag_drop",
+            "match_pairs",
+            "sort_categorize",
+            "hotspot"
+          ]
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "competency_keys": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "config": {
+          "type": "object"
+        },
+        "answer_key": {
+          "type": "object"
+        }
+      }
+    },
+    "activity": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseActivity"
+        },
+        {
+          "type": "object",
+          "not": {
+            "required": [
+              "xp_reward"
+            ]
+          }
+        }
+      ]
+    },
+    "quizActivity": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseActivity"
+        },
+        {
+          "type": "object",
+          "required": [
+            "points"
+          ],
+          "properties": {
+            "points": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      ]
+    }
+  }
+}
