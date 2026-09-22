@@ -40,12 +40,14 @@ function readProgress(lessonSlug: string): LessonProgress {
 
 export function useLessonProgress(lessonSlug: string) {
   const [progress, setProgress] = useState<LessonProgress>(emptyProgress);
+  const [loading, setLoading] = useState(true);
   const [savingStep, setSavingStep] = useState<LessonStep | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     const sync = async () => {
+      setLoading(true);
       try {
         const {
           data: { session },
@@ -82,6 +84,8 @@ export function useLessonProgress(lessonSlug: string) {
         if (active) setProgress({ ...emptyProgress, ...synced });
       } catch {
         if (active) setProgress(readProgress(lessonSlug));
+      } finally {
+        if (active) setLoading(false);
       }
     };
     void sync();
@@ -136,5 +140,5 @@ export function useLessonProgress(lessonSlug: string) {
     [lessonSlug, progress],
   );
 
-  return { progress, completeStep, savingStep, error };
+  return { progress, loading, completeStep, savingStep, error };
 }
