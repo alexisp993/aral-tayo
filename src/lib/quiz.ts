@@ -38,6 +38,11 @@ export type RecipeBuilderQuestion = BaseQuestion & {
   ingredients: { id: string; label: string }[];
   correctIngredientIds: string[];
 };
+export type FractionMemoryQuestion = BaseQuestion & {
+  type: "fraction_memory";
+  cards: { id: string; label: string }[];
+  correctPairs: [string, string][];
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -54,6 +59,7 @@ export type QuizQuestion =
   | NumberLineDashQuestion
   | FractionCannonQuestion
   | RecipeBuilderQuestion
+  | FractionMemoryQuestion
   | MatchPairsQuestion
   | OrderingQuestion;
 export type PublicQuizQuestion =
@@ -63,6 +69,7 @@ export type PublicQuizQuestion =
   | Omit<NumberLineDashQuestion, "correctPositionId" | "explanation">
   | Omit<FractionCannonQuestion, "correctTargetId" | "explanation">
   | Omit<RecipeBuilderQuestion, "correctIngredientIds" | "explanation">
+  | Omit<FractionMemoryQuestion, "correctPairs" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -177,6 +184,23 @@ const recipeBuilder = (
   correctIngredientIds,
   explanation,
 });
+const fractionMemory = (
+  id: string,
+  prompt: string,
+  cards: string[],
+  correctPairs: [string, string][],
+  explanation: string,
+): FractionMemoryQuestion => ({
+  id,
+  type: "fraction_memory",
+  prompt,
+  cards: cards.map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  correctPairs,
+  explanation,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -242,6 +266,20 @@ export const addingFractionsQuiz: QuizQuestion[] = [
     ["1/4 cup mango", "3/4 cup milk", "1/8 cup oats", "1/2 cup yogurt"],
     ["a", "b"],
     "One fourth plus three fourths equals four fourths, or one whole cup.",
+  ),
+  fractionMemory(
+    "af-memory-01",
+    "Clear the board by matching equivalent fractions.",
+    ["1/2", "2/3", "2/4", "6/8", "4/6", "3/4"],
+    [["a", "c"], ["b", "e"], ["d", "f"]],
+    "Each pair names the same amount: 1/2 = 2/4, 2/3 = 4/6, and 6/8 = 3/4.",
+  ),
+  fractionMemory(
+    "af-memory-02",
+    "Find all three equivalent-fraction pairs.",
+    ["1/3", "3/5", "2/6", "6/10", "4/8", "1/2"],
+    [["a", "c"], ["b", "d"], ["e", "f"]],
+    "Equivalent fractions keep the same value when the numerator and denominator are multiplied by the same number.",
   ),
   numberLineDash(
     "af-line-02",
@@ -403,6 +441,7 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
     "number_line_dash",
     "fraction_cannon",
     "recipe_builder",
+    "fraction_memory",
     "treasure_match",
     "order_tower",
   ] as const;
@@ -462,6 +501,13 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       prompt: question.prompt,
       ingredients: question.ingredients,
     };
+  if (question.type === "fraction_memory")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      cards: question.cards,
+    };
   if (question.type === "treasure_match")
     return {
       id: question.id,
@@ -515,6 +561,18 @@ export function isAnswerShape(
         question.ingredients.some((ingredient) => ingredient.id === id),
       )
     );
+  if (question.type === "fraction_memory") {
+    if (!Array.isArray(answer) || answer.length !== question.correctPairs.length)
+      return false;
+    const cardIds = new Set(question.cards.map((card) => card.id));
+    const usedIds = answer.flatMap((pair) => pair.split(":"));
+    return (
+      answer.every((pair) => /^[a-z]:[a-z]$/.test(pair)) &&
+      usedIds.length === question.cards.length &&
+      new Set(usedIds).size === question.cards.length &&
+      usedIds.every((id) => cardIds.has(id))
+    );
+  }
   if (question.type === "treasure_match")
     return (
       !!answer &&
@@ -576,6 +634,18 @@ export function isQuizDraftComplete(
         question.ingredients.some((ingredient) => ingredient.id === id),
       )
     );
+  if (question.type === "fraction_memory") {
+    if (!Array.isArray(draft) || draft.length !== question.cards.length / 2)
+      return false;
+    const cardIds = new Set(question.cards.map((card) => card.id));
+    const usedIds = draft.flatMap((pair) => pair.split(":"));
+    return (
+      draft.every((pair) => /^[a-z]:[a-z]$/.test(pair)) &&
+      usedIds.length === question.cards.length &&
+      new Set(usedIds).size === question.cards.length &&
+      usedIds.every((id) => cardIds.has(id))
+    );
+  }
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -618,6 +688,14 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
             (id, index) =>
               id === [...question.correctIngredientIds].sort()[index],
           )
+      : question.type === "fraction_memory"
+        ? [...(answer as string[])].sort().every(
+            (pair, index) =>
+              pair ===
+              question.correctPairs
+                .map((ids) => [...ids].sort().join(":"))
+                .sort()[index],
+          )
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -638,6 +716,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? question.correctTargetId
       : question.type === "recipe_builder"
         ? question.correctIngredientIds
+      : question.type === "fraction_memory"
+        ? question.correctPairs.map((ids) => [...ids].sort().join(":"))
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;

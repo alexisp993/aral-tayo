@@ -71,6 +71,9 @@ describe("quiz engine", () => {
     const recipe = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "recipe_builder")!,
     );
+    const memory = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "fraction_memory")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
     expect(runner).not.toHaveProperty("correctLaneId");
@@ -82,6 +85,8 @@ describe("quiz engine", () => {
     expect(cannon).not.toHaveProperty("explanation");
     expect(recipe).not.toHaveProperty("correctIngredientIds");
     expect(recipe).not.toHaveProperty("explanation");
+    expect(memory).not.toHaveProperty("correctPairs");
+    expect(memory).not.toHaveProperty("explanation");
   });
 
   it("requires a valid selected bridge option", () => {
@@ -150,5 +155,24 @@ describe("quiz engine", () => {
     expect(isQuizDraftComplete(recipe, ["b", "a"])).toBe(true);
     expect(evaluateQuizAnswer(privateRecipe, ["b", "a"]).correct).toBe(true);
     expect(evaluateQuizAnswer(privateRecipe, ["a", "c"]).correct).toBe(false);
+  });
+
+  it("accepts only complete Fraction Memory boards and grades pair order safely", () => {
+    const privateMemory = addingFractionsQuiz.find(
+      (question) => question.type === "fraction_memory",
+    )!;
+    const memory = publicQuestion(privateMemory) as Extract<
+      PublicQuizQuestion,
+      { type: "fraction_memory" }
+    >;
+    expect(isQuizDraftComplete(memory, ["a:c"])).toBe(false);
+    expect(isQuizDraftComplete(memory, ["a:c", "b:e", "d:d"])).toBe(false);
+    expect(isQuizDraftComplete(memory, ["a:c", "b:e", "d:f"])).toBe(true);
+    expect(
+      evaluateQuizAnswer(privateMemory, ["d:f", "c:a", "e:b"]).correct,
+    ).toBe(false);
+    expect(
+      evaluateQuizAnswer(privateMemory, ["d:f", "a:c", "b:e"]).correct,
+    ).toBe(true);
   });
 });

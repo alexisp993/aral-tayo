@@ -10,6 +10,7 @@ import { PizzaCatch } from "@/components/quiz-games/pizza-catch";
 import { NumberLineDash } from "@/components/quiz-games/number-line-dash";
 import { FractionCannon } from "@/components/quiz-games/fraction-cannon";
 import { RecipeBuilder } from "@/components/quiz-games/recipe-builder";
+import { FractionMemory } from "@/components/quiz-games/fraction-memory";
 import { createClient } from "@/lib/supabase/client";
 import { isQuizDraftComplete } from "@/lib/quiz";
 import type { PublicQuizQuestion, QuizAnswer } from "@/lib/quiz";
@@ -212,6 +213,7 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
     number_line_dash: "Number-Line Dash",
     fraction_cannon: "Fraction Cannon",
     recipe_builder: "Recipe Builder",
+    fraction_memory: "Fraction Memory",
     treasure_match: "Treasure Match",
     order_tower: "Order Tower",
   }[q.type];
@@ -265,6 +267,13 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
       />
     ) : q.type === "recipe_builder" ? (
       <RecipeBuilder
+        question={q}
+        value={Array.isArray(value) ? value : []}
+        onChange={setDraft}
+        disabled={!!currentLocked}
+      />
+    ) : q.type === "fraction_memory" ? (
+      <FractionMemory
         question={q}
         value={Array.isArray(value) ? value : []}
         onChange={setDraft}

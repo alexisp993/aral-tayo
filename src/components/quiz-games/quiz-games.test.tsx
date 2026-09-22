@@ -8,6 +8,7 @@ import { NumberLineDash } from "./number-line-dash";
 import { FractionCannon } from "./fraction-cannon";
 import { TreasureMatch } from "./treasure-match";
 import { RecipeBuilder } from "./recipe-builder";
+import { FractionMemory } from "./fraction-memory";
 
 const treasureQuestion = {
   id: "treasure-1",
@@ -81,6 +82,18 @@ const recipeQuestion = {
     { id: "a", label: "1/4 cup berries" },
     { id: "b", label: "2/4 cup oats" },
     { id: "c", label: "1/8 cup seeds" },
+  ],
+};
+
+const memoryQuestion = {
+  id: "memory-1",
+  type: "fraction_memory" as const,
+  prompt: "Match equivalent fractions",
+  cards: [
+    { id: "a", label: "1/2" },
+    { id: "b", label: "2/3" },
+    { id: "c", label: "2/4" },
+    { id: "d", label: "4/6" },
   ],
 };
 
@@ -205,5 +218,26 @@ describe("quiz game controls", () => {
     expect(screen.getByRole("button", { name: "1/8 cup seeds" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Empty bowl" }));
     expect(onChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("keeps equivalent Fraction Memory pairs and clears mismatches", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<FractionMemory question={memoryQuestion} onChange={onChange} />);
+
+    await user.click(screen.getByRole("button", { name: "Card 1, face down" }));
+    await user.click(screen.getByRole("button", { name: "Card 2, face down" }));
+    expect(
+      screen.getByText("Those fractions are not equivalent yet."),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Flip cards back" }));
+
+    await user.click(screen.getByRole("button", { name: "Card 1, face down" }));
+    await user.click(screen.getByRole("button", { name: "Card 3, face down" }));
+    await user.click(screen.getByRole("button", { name: "Card 2, face down" }));
+    await user.click(screen.getByRole("button", { name: "Card 4, face down" }));
+
+    expect(onChange).toHaveBeenLastCalledWith(["a:c", "b:d"]);
+    expect(screen.getByText("2 of 2 pairs")).toBeInTheDocument();
   });
 });
