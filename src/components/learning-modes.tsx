@@ -146,11 +146,13 @@ export function LearningPath({ lessonSlug }: { lessonSlug: string }) {
 
 function ModeHeader({
   lessonSlug,
+  lessonTitle,
   label,
   step,
   description,
 }: {
   lessonSlug: string;
+  lessonTitle: string;
   label: string;
   step: string;
   description: string;
@@ -173,7 +175,7 @@ function ModeHeader({
               {label} · {step}
             </p>
             <h1 className="game-display text-4xl font-semibold text-[#17150f] md:text-6xl">
-              Adding Fractions
+              {lessonTitle}
             </h1>
             <p className="text-ink mt-2 max-w-2xl leading-7">{description}</p>
           </div>
@@ -185,9 +187,11 @@ function ModeHeader({
 
 export function LearnMode({
   lessonSlug,
+  lessonTitle,
   blocks,
 }: {
   lessonSlug: string;
+  lessonTitle: string;
   blocks: LearnBlock[];
 }) {
   const { progress, completeStep, savingStep, error } =
@@ -197,6 +201,7 @@ export function LearnMode({
     <>
       <ModeHeader
         lessonSlug={lessonSlug}
+        lessonTitle={lessonTitle}
         label="Learn"
         step="Step 1 of 4"
         description="Build the idea one example at a time, then continue when it makes sense."
@@ -286,9 +291,11 @@ export function LearnMode({
 
 export function FlashcardsMode({
   lessonSlug,
+  lessonTitle,
   cards,
 }: {
   lessonSlug: string;
+  lessonTitle: string;
   cards: Flashcard[];
 }) {
   const [index, setIndex] = useState(0);
@@ -307,6 +314,7 @@ export function FlashcardsMode({
     <>
       <ModeHeader
         lessonSlug={lessonSlug}
+        lessonTitle={lessonTitle}
         label="Flashcards"
         step="Step 2 of 4"
         description="Review each term at your own pace. Say your answer before you reveal it."

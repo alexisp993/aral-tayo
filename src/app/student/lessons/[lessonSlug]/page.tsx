@@ -4,10 +4,10 @@ import { ArrowLeft, Brain, Clock3 } from "lucide-react";
 
 import { LearningPath } from "@/components/learning-modes";
 import { Card } from "@/components/ui";
-import { addingFractionsLesson, getLesson } from "@/lib/curriculum";
+import { getLesson, lessons } from "@/lib/curriculum";
 
 export function generateStaticParams() {
-  return [{ lessonSlug: addingFractionsLesson.slug }];
+  return lessons.map((lesson) => ({ lessonSlug: lesson.slug }));
 }
 
 export default async function LessonOverviewPage({

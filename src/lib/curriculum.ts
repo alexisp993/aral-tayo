@@ -124,12 +124,12 @@ export const addingFractionsLesson = {
   ],
 } as const;
 
+export const lessons = [addingFractionsLesson] as const;
+
 export function getSubject(slug: string) {
   return subjects.find((subject) => subject.slug === slug);
 }
 
 export function getLesson(slug: string) {
-  return slug === addingFractionsLesson.slug
-    ? addingFractionsLesson
-    : undefined;
+  return lessons.find((lesson) => lesson.slug === slug);
 }

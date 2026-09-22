@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { QuizMode } from "@/components/quiz-mode";
-import { addingFractionsLesson, getLesson } from "@/lib/curriculum";
+import { getLesson, lessons } from "@/lib/curriculum";
 
 export function generateStaticParams() {
-  return [{ lessonSlug: addingFractionsLesson.slug }];
+  return lessons.map((lesson) => ({ lessonSlug: lesson.slug }));
 }
 
 export default async function QuizPage({

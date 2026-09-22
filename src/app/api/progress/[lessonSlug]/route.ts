@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
+import { isLessonSlug } from "@/lib/lesson-content";
 import { getPracticeProgress } from "@/lib/practice-progress";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -26,7 +27,7 @@ export async function GET(
   { params }: { params: Promise<{ lessonSlug: string }> },
 ) {
   const { lessonSlug } = await params;
-  if (lessonSlug !== "adding-fractions")
+  if (!isLessonSlug(lessonSlug))
     return NextResponse.json({ error: "Lesson not found." }, { status: 404 });
 
   const user = await getAuthenticatedUser(request);
@@ -35,7 +36,7 @@ export async function GET(
 
   try {
     const [practice, progressResult] = await Promise.all([
-      getPracticeProgress(user.id),
+      getPracticeProgress(user.id, lessonSlug),
       createAdminClient()
         .from("lesson_progress")
         .select(
@@ -62,7 +63,7 @@ export async function POST(
   { params }: { params: Promise<{ lessonSlug: string }> },
 ) {
   const { lessonSlug } = await params;
-  if (lessonSlug !== "adding-fractions")
+  if (!isLessonSlug(lessonSlug))
     return NextResponse.json({ error: "Lesson not found." }, { status: 404 });
 
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));

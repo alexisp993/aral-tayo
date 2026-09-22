@@ -25,7 +25,13 @@ describe("LearnMode", () => {
       error: "",
     });
 
-    render(<LearnMode blocks={[]} lessonSlug="adding-fractions" />);
+    render(
+      <LearnMode
+        blocks={[]}
+        lessonSlug="adding-fractions"
+        lessonTitle="Adding Fractions"
+      />,
+    );
 
     expect(screen.getByRole("button", { name: /saving/i })).toBeDisabled();
     expect(

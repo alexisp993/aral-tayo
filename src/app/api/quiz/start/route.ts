@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
+import { isLessonSlug } from "@/lib/lesson-content";
 import { getPracticeProgress } from "@/lib/practice-progress";
 import {
   evaluateQuizAnswer,
@@ -13,7 +14,7 @@ import {
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const bodySchema = z.object({
-  lessonSlug: z.literal("adding-fractions"),
+  lessonSlug: z.string().min(1),
 });
 
 export async function POST(request: Request) {
@@ -23,6 +24,8 @@ export async function POST(request: Request) {
       { error: "Invalid quiz request." },
       { status: 400 },
     );
+  if (!isLessonSlug(parsed.data.lessonSlug))
+    return NextResponse.json({ error: "Lesson not found." }, { status: 404 });
 
   const user = await getAuthenticatedUser(request);
   if (!user)
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
     );
 
   try {
-    const practice = await getPracticeProgress(user.id);
+    const practice = await getPracticeProgress(user.id, parsed.data.lessonSlug);
     if (!practice.practiceCompleted)
       return NextResponse.json(
         {
@@ -75,7 +78,7 @@ export async function POST(request: Request) {
         index: index === -1 ? ids.length : index,
       });
     }
-    const questions = selectQuizQuestions(5);
+    const questions = selectQuizQuestions(parsed.data.lessonSlug, 5);
     const { data, error } = await admin
       .from("quiz_sessions")
       .insert({

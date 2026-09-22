@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import lessonSeed from "../../../../../seed/grade-5-math/adding-fractions.seed.json";
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
+import { getLessonSeed, isLessonSlug } from "@/lib/lesson-content";
 import { markPracticeComplete } from "@/lib/practice-progress";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const bodySchema = z.object({
   eventId: z.uuid(),
-  lessonSlug: z.literal("adding-fractions"),
+  lessonSlug: z.string().min(1),
   activityKey: z.string().min(1),
   response: z.unknown(),
   attemptsUsed: z.number().int().min(1),
@@ -29,6 +29,9 @@ export async function POST(request: Request) {
       { error: "Sign in to submit practice." },
       { status: 401 },
     );
+  if (!isLessonSlug(parsed.data.lessonSlug))
+    return NextResponse.json({ error: "Lesson not found." }, { status: 404 });
+  const lessonSeed = getLessonSeed(parsed.data.lessonSlug)!;
   const activity = lessonSeed.lesson.practice.activities.find(
     (item) => item.id === parsed.data.activityKey,
   );
@@ -97,7 +100,7 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   try {
-    const progress = await markPracticeComplete(user.id);
+    const progress = await markPracticeComplete(user.id, parsed.data.lessonSlug);
     return NextResponse.json({ ...data, ...progress });
   } catch {
     return NextResponse.json(data);

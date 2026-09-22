@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isLessonSlug } from "@/lib/lesson-content";
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
 import {
   evaluateQuizAnswer,
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
   if (!user)
     return NextResponse.json({ error: "Sign in to resume." }, { status: 401 });
   const lessonSlug = new URL(request.url).searchParams.get("lessonSlug");
-  if (lessonSlug !== "adding-fractions")
+  if (!lessonSlug || !isLessonSlug(lessonSlug))
     return NextResponse.json({ error: "Invalid lesson." }, { status: 400 });
   const { data: session, error } = await createAdminClient()
     .from("quiz_sessions")

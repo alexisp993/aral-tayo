@@ -12,7 +12,7 @@ import type { PublicQuizQuestion } from "./quiz";
 
 describe("quiz engine", () => {
   it("selects a bounded set without duplicates", () => {
-    const selected = selectQuizQuestions(5, () => 0.5);
+    const selected = selectQuizQuestions("adding-fractions", 5, () => 0.5);
     expect(selected).toHaveLength(5);
     expect(new Set(selected.map((question) => question.id))).toHaveLength(5);
   });
@@ -44,9 +44,13 @@ describe("quiz engine", () => {
   });
 
   it("shuffles five distinct game types in a quest", () => {
-    const selected = selectQuizQuestions(5, () => 0.5);
+    const selected = selectQuizQuestions("adding-fractions", 5, () => 0.5);
     expect(new Set(selected.map((q) => q.type))).toHaveLength(5);
     expect(selected).toHaveLength(5);
+  });
+
+  it("does not create a quiz for an unregistered lesson", () => {
+    expect(selectQuizQuestions("missing-lesson", 5, () => 0.5)).toEqual([]);
   });
 
   it("does not expose matching associations or ordering solution", () => {

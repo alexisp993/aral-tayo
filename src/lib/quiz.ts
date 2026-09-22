@@ -424,8 +424,13 @@ export const addingFractionsQuiz: QuizQuestion[] = [
       "A shared denominator comes before equivalent fractions and addition.",
   },
 ];
+const quizBanks: Record<string, QuizQuestion[]> = {
+  "adding-fractions": addingFractionsQuiz,
+};
 export function findQuestion(id: string) {
-  return addingFractionsQuiz.find((q) => q.id === id);
+  return Object.values(quizBanks)
+    .flat()
+    .find((q) => q.id === id);
 }
 function shuffle<T>(items: T[], random: () => number) {
   return items
@@ -433,7 +438,13 @@ function shuffle<T>(items: T[], random: () => number) {
     .sort((a, b) => a.order - b.order)
     .map(({ item }) => item);
 }
-export function selectQuizQuestions(count = 5, random = Math.random) {
+export function selectQuizQuestions(
+  lessonSlug: string,
+  count = 5,
+  random = Math.random,
+) {
+  const quiz = quizBanks[lessonSlug];
+  if (!quiz) return [];
   const gameTypes = [
     "bridge_builder",
     "fraction_runner",
@@ -449,7 +460,7 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
   const selected = selectedTypes.map(
     (type) =>
       shuffle(
-        addingFractionsQuiz.filter((q) => q.type === type),
+        quiz.filter((q) => q.type === type),
         random,
       )[0],
   );

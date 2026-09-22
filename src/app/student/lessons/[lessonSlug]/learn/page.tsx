@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 
 import { LearnMode, type LearnBlock } from "@/components/learning-modes";
-import { addingFractionsLesson, getLesson } from "@/lib/curriculum";
-import lessonSeed from "../../../../../../seed/grade-5-math/adding-fractions.seed.json";
+import { getLesson, lessons } from "@/lib/curriculum";
+import { getLessonSeed } from "@/lib/lesson-content";
 
 export function generateStaticParams() {
-  return [{ lessonSlug: addingFractionsLesson.slug }];
+  return lessons.map((lesson) => ({ lessonSlug: lesson.slug }));
 }
 
 export default async function LearnPage({
@@ -14,12 +14,15 @@ export default async function LearnPage({
   params: Promise<{ lessonSlug: string }>;
 }) {
   const { lessonSlug } = await params;
-  if (!getLesson(lessonSlug)) notFound();
+  const lesson = getLesson(lessonSlug);
+  const lessonSeed = getLessonSeed(lessonSlug);
+  if (!lesson || !lessonSeed) notFound();
 
   return (
     <LearnMode
       blocks={lessonSeed.lesson.learn_blocks as LearnBlock[]}
       lessonSlug={lessonSlug}
+      lessonTitle={lesson.title}
     />
   );
 }

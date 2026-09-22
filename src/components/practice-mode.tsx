@@ -55,9 +55,11 @@ function StatChip({
 
 export function PracticeMode({
   lessonSlug,
+  lessonTitle,
   activities,
 }: {
   lessonSlug: string;
+  lessonTitle: string;
   activities: Activity[];
 }) {
   const [index, setIndex] = useState(0);
@@ -178,7 +180,7 @@ export function PracticeMode({
               Practice complete!
             </h1>
             <p className="mx-auto mt-3 max-w-xl text-lg font-bold text-[#4d4739]">
-              You finished every challenge in Adding Fractions.
+              You finished every challenge in {lessonTitle}.
             </p>
           </div>
 
