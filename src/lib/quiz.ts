@@ -28,6 +28,11 @@ export type NumberLineDashQuestion = BaseQuestion & {
   course: { stepCount: number; stepDurationMs: number };
   correctPositionId: string;
 };
+export type FractionCannonQuestion = BaseQuestion & {
+  type: "fraction_cannon";
+  targets: { id: string; label: string }[];
+  correctTargetId: string;
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -42,6 +47,7 @@ export type QuizQuestion =
   | FractionRunnerQuestion
   | PizzaCatchQuestion
   | NumberLineDashQuestion
+  | FractionCannonQuestion
   | MatchPairsQuestion
   | OrderingQuestion;
 export type PublicQuizQuestion =
@@ -49,6 +55,7 @@ export type PublicQuizQuestion =
   | Omit<FractionRunnerQuestion, "correctLaneId" | "explanation">
   | Omit<PizzaCatchQuestion, "correctSliceId" | "explanation">
   | Omit<NumberLineDashQuestion, "correctPositionId" | "explanation">
+  | Omit<FractionCannonQuestion, "correctTargetId" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -129,6 +136,23 @@ const numberLineDash = (
   correctPositionId: correct,
   explanation,
 });
+const fractionCannon = (
+  id: string,
+  prompt: string,
+  targets: string[],
+  correct: string,
+  explanation: string,
+): FractionCannonQuestion => ({
+  id,
+  type: "fraction_cannon",
+  prompt,
+  targets: targets.map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  correctTargetId: correct,
+  explanation,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -166,6 +190,20 @@ export const addingFractionsQuiz: QuizQuestion[] = [
     "Dash to the point that shows 1/4 + 1/4.",
     "c",
     "One fourth plus one fourth is two fourths, which equals one half.",
+  ),
+  fractionCannon(
+    "af-cannon-01",
+    "Aim at the fraction equivalent to 2/4.",
+    ["1/4", "1/2", "3/4"],
+    "b",
+    "Two fourths simplifies to one half.",
+  ),
+  fractionCannon(
+    "af-cannon-02",
+    "Aim at the sum of 2/8 + 3/8.",
+    ["5/16", "5/8", "6/8"],
+    "b",
+    "The denominators match, so add 2 + 3 and keep the denominator 8.",
   ),
   numberLineDash(
     "af-line-02",
@@ -325,6 +363,7 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
     "fraction_runner",
     "pizza_catch",
     "number_line_dash",
+    "fraction_cannon",
     "treasure_match",
     "order_tower",
   ] as const;
@@ -370,6 +409,13 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       positions: question.positions,
       course: question.course,
     };
+  if (question.type === "fraction_cannon")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      targets: question.targets,
+    };
   if (question.type === "treasure_match")
     return {
       id: question.id,
@@ -408,6 +454,11 @@ export function isAnswerShape(
     return (
       typeof answer === "string" &&
       question.positions.some((position) => position.id === answer)
+    );
+  if (question.type === "fraction_cannon")
+    return (
+      typeof answer === "string" &&
+      question.targets.some((target) => target.id === answer)
     );
   if (question.type === "treasure_match")
     return (
@@ -456,6 +507,11 @@ export function isQuizDraftComplete(
       typeof draft === "string" &&
       question.positions.some((position) => position.id === draft)
     );
+  if (question.type === "fraction_cannon")
+    return (
+      typeof draft === "string" &&
+      question.targets.some((target) => target.id === draft)
+    );
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -491,6 +547,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? answer === question.correctSliceId
       : question.type === "number_line_dash"
         ? answer === question.correctPositionId
+      : question.type === "fraction_cannon"
+        ? answer === question.correctTargetId
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -507,6 +565,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? question.correctSliceId
       : question.type === "number_line_dash"
         ? question.correctPositionId
+      : question.type === "fraction_cannon"
+        ? question.correctTargetId
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;

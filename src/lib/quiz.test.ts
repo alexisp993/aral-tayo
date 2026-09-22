@@ -30,6 +30,8 @@ describe("quiz engine", () => {
               ? question.correctSliceId
               : question.type === "number_line_dash"
                 ? question.correctPositionId
+                : question.type === "fraction_cannon"
+                  ? question.correctTargetId
             : "",
       ]),
     );
@@ -62,6 +64,9 @@ describe("quiz engine", () => {
     const numberLine = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "number_line_dash")!,
     );
+    const cannon = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "fraction_cannon")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
     expect(runner).not.toHaveProperty("correctLaneId");
@@ -69,6 +74,8 @@ describe("quiz engine", () => {
     expect(pizza).not.toHaveProperty("explanation");
     expect(numberLine).not.toHaveProperty("correctPositionId");
     expect(numberLine).not.toHaveProperty("explanation");
+    expect(cannon).not.toHaveProperty("correctTargetId");
+    expect(cannon).not.toHaveProperty("explanation");
   });
 
   it("requires a valid selected bridge option", () => {

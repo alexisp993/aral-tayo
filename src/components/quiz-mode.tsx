@@ -8,6 +8,7 @@ import { OrderTower } from "@/components/quiz-games/order-tower";
 import { FractionRunner } from "@/components/quiz-games/fraction-runner";
 import { PizzaCatch } from "@/components/quiz-games/pizza-catch";
 import { NumberLineDash } from "@/components/quiz-games/number-line-dash";
+import { FractionCannon } from "@/components/quiz-games/fraction-cannon";
 import { createClient } from "@/lib/supabase/client";
 import { isQuizDraftComplete } from "@/lib/quiz";
 import type { PublicQuizQuestion, QuizAnswer } from "@/lib/quiz";
@@ -208,6 +209,7 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
     fraction_runner: "Fraction Runner",
     pizza_catch: "Pizza Slice Catch",
     number_line_dash: "Number-Line Dash",
+    fraction_cannon: "Fraction Cannon",
     treasure_match: "Treasure Match",
     order_tower: "Order Tower",
   }[q.type];
@@ -238,6 +240,13 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
       />
     ) : q.type === "number_line_dash" ? (
       <NumberLineDash
+        question={q}
+        value={typeof value === "string" ? value : undefined}
+        onChange={setDraft}
+        disabled={!!currentLocked}
+      />
+    ) : q.type === "fraction_cannon" ? (
+      <FractionCannon
         question={q}
         value={typeof value === "string" ? value : undefined}
         onChange={setDraft}

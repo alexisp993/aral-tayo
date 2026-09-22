@@ -5,6 +5,7 @@ import { OrderTower } from "./order-tower";
 import { FractionRunner } from "./fraction-runner";
 import { PizzaCatch } from "./pizza-catch";
 import { NumberLineDash } from "./number-line-dash";
+import { FractionCannon } from "./fraction-cannon";
 import { TreasureMatch } from "./treasure-match";
 
 const treasureQuestion = {
@@ -58,6 +59,17 @@ const numberLineQuestion = {
     label,
   })),
   course: { stepCount: 2, stepDurationMs: 99_999 },
+};
+
+const cannonQuestion = {
+  id: "cannon-1",
+  type: "fraction_cannon" as const,
+  prompt: "Fire at the answer",
+  targets: [
+    { id: "a", label: "1/4" },
+    { id: "b", label: "1/2" },
+    { id: "c", label: "3/4" },
+  ],
 };
 
 describe("quiz game controls", () => {
@@ -138,5 +150,16 @@ describe("quiz game controls", () => {
     expect(screen.getByLabelText("Marker at 1/2")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Move marker right" }));
     expect(screen.getByLabelText("Marker at 3/4")).toBeInTheDocument();
+  });
+
+  it("aims and fires the Fraction Cannon", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<FractionCannon question={cannonQuestion} onChange={onChange} />);
+    await user.click(screen.getByRole("button", { name: "Aim right" }));
+    expect(screen.getByLabelText(/Target 3: 3\/4, aimed/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /fire/i }));
+    expect(await screen.findByText(/Target hit/i)).toBeInTheDocument();
+    expect(onChange).toHaveBeenCalledWith("c");
   });
 });
