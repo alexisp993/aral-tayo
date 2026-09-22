@@ -33,6 +33,11 @@ export type FractionCannonQuestion = BaseQuestion & {
   targets: { id: string; label: string }[];
   correctTargetId: string;
 };
+export type RecipeBuilderQuestion = BaseQuestion & {
+  type: "recipe_builder";
+  ingredients: { id: string; label: string }[];
+  correctIngredientIds: string[];
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -48,6 +53,7 @@ export type QuizQuestion =
   | PizzaCatchQuestion
   | NumberLineDashQuestion
   | FractionCannonQuestion
+  | RecipeBuilderQuestion
   | MatchPairsQuestion
   | OrderingQuestion;
 export type PublicQuizQuestion =
@@ -56,6 +62,7 @@ export type PublicQuizQuestion =
   | Omit<PizzaCatchQuestion, "correctSliceId" | "explanation">
   | Omit<NumberLineDashQuestion, "correctPositionId" | "explanation">
   | Omit<FractionCannonQuestion, "correctTargetId" | "explanation">
+  | Omit<RecipeBuilderQuestion, "correctIngredientIds" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -153,6 +160,23 @@ const fractionCannon = (
   correctTargetId: correct,
   explanation,
 });
+const recipeBuilder = (
+  id: string,
+  prompt: string,
+  ingredients: string[],
+  correctIngredientIds: string[],
+  explanation: string,
+): RecipeBuilderQuestion => ({
+  id,
+  type: "recipe_builder",
+  prompt,
+  ingredients: ingredients.map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  correctIngredientIds,
+  explanation,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -204,6 +228,20 @@ export const addingFractionsQuiz: QuizQuestion[] = [
     ["5/16", "5/8", "6/8"],
     "b",
     "The denominators match, so add 2 + 3 and keep the denominator 8.",
+  ),
+  recipeBuilder(
+    "af-recipe-01",
+    "Mix exactly two ingredients to make 3/4 cup.",
+    ["1/4 cup berries", "2/4 cup oats", "1/8 cup seeds", "3/8 cup yogurt"],
+    ["a", "b"],
+    "One fourth plus two fourths equals three fourths of a cup.",
+  ),
+  recipeBuilder(
+    "af-recipe-02",
+    "Mix exactly two ingredients to make 1 whole cup.",
+    ["1/4 cup mango", "3/4 cup milk", "1/8 cup oats", "1/2 cup yogurt"],
+    ["a", "b"],
+    "One fourth plus three fourths equals four fourths, or one whole cup.",
   ),
   numberLineDash(
     "af-line-02",
@@ -364,6 +402,7 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
     "pizza_catch",
     "number_line_dash",
     "fraction_cannon",
+    "recipe_builder",
     "treasure_match",
     "order_tower",
   ] as const;
@@ -416,6 +455,13 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       prompt: question.prompt,
       targets: question.targets,
     };
+  if (question.type === "recipe_builder")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      ingredients: question.ingredients,
+    };
   if (question.type === "treasure_match")
     return {
       id: question.id,
@@ -459,6 +505,15 @@ export function isAnswerShape(
     return (
       typeof answer === "string" &&
       question.targets.some((target) => target.id === answer)
+    );
+  if (question.type === "recipe_builder")
+    return (
+      Array.isArray(answer) &&
+      answer.length === 2 &&
+      new Set(answer).size === 2 &&
+      answer.every((id) =>
+        question.ingredients.some((ingredient) => ingredient.id === id),
+      )
     );
   if (question.type === "treasure_match")
     return (
@@ -512,6 +567,15 @@ export function isQuizDraftComplete(
       typeof draft === "string" &&
       question.targets.some((target) => target.id === draft)
     );
+  if (question.type === "recipe_builder")
+    return (
+      Array.isArray(draft) &&
+      draft.length === 2 &&
+      new Set(draft).size === 2 &&
+      draft.every((id) =>
+        question.ingredients.some((ingredient) => ingredient.id === id),
+      )
+    );
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -549,6 +613,11 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? answer === question.correctPositionId
       : question.type === "fraction_cannon"
         ? answer === question.correctTargetId
+      : question.type === "recipe_builder"
+        ? [...(answer as string[])].sort().every(
+            (id, index) =>
+              id === [...question.correctIngredientIds].sort()[index],
+          )
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -567,6 +636,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? question.correctPositionId
       : question.type === "fraction_cannon"
         ? question.correctTargetId
+      : question.type === "recipe_builder"
+        ? question.correctIngredientIds
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;

@@ -7,6 +7,7 @@ import { PizzaCatch } from "./pizza-catch";
 import { NumberLineDash } from "./number-line-dash";
 import { FractionCannon } from "./fraction-cannon";
 import { TreasureMatch } from "./treasure-match";
+import { RecipeBuilder } from "./recipe-builder";
 
 const treasureQuestion = {
   id: "treasure-1",
@@ -69,6 +70,17 @@ const cannonQuestion = {
     { id: "a", label: "1/4" },
     { id: "b", label: "1/2" },
     { id: "c", label: "3/4" },
+  ],
+};
+
+const recipeQuestion = {
+  id: "recipe-1",
+  type: "recipe_builder" as const,
+  prompt: "Mix two ingredients",
+  ingredients: [
+    { id: "a", label: "1/4 cup berries" },
+    { id: "b", label: "2/4 cup oats" },
+    { id: "c", label: "1/8 cup seeds" },
   ],
 };
 
@@ -161,5 +173,37 @@ describe("quiz game controls", () => {
     await user.click(screen.getByRole("button", { name: /fire/i }));
     expect(await screen.findByText(/Target hit/i)).toBeInTheDocument();
     expect(onChange).toHaveBeenCalledWith("c");
+  });
+
+  it("adds two Recipe Builder ingredients and can empty the bowl", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <RecipeBuilder question={recipeQuestion} onChange={onChange} />,
+    );
+    await user.click(screen.getByRole("button", { name: "1/4 cup berries" }));
+    expect(onChange).toHaveBeenLastCalledWith(["a"]);
+
+    rerender(
+      <RecipeBuilder
+        question={recipeQuestion}
+        value={["a"]}
+        onChange={onChange}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "2/4 cup oats" }));
+    expect(onChange).toHaveBeenLastCalledWith(["a", "b"]);
+
+    rerender(
+      <RecipeBuilder
+        question={recipeQuestion}
+        value={["a", "b"]}
+        onChange={onChange}
+      />,
+    );
+    expect(screen.getByText("Recipe ready to lock in.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "1/8 cup seeds" })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Empty bowl" }));
+    expect(onChange).toHaveBeenLastCalledWith([]);
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   addingFractionsQuiz,
+  evaluateQuizAnswer,
   gradeQuiz,
   isQuizDraftComplete,
   publicQuestion,
@@ -67,6 +68,9 @@ describe("quiz engine", () => {
     const cannon = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "fraction_cannon")!,
     );
+    const recipe = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "recipe_builder")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
     expect(runner).not.toHaveProperty("correctLaneId");
@@ -76,6 +80,8 @@ describe("quiz engine", () => {
     expect(numberLine).not.toHaveProperty("explanation");
     expect(cannon).not.toHaveProperty("correctTargetId");
     expect(cannon).not.toHaveProperty("explanation");
+    expect(recipe).not.toHaveProperty("correctIngredientIds");
+    expect(recipe).not.toHaveProperty("explanation");
   });
 
   it("requires a valid selected bridge option", () => {
@@ -128,5 +134,21 @@ describe("quiz engine", () => {
         tower.items.map((item) => item.id),
       ),
     ).toBe(true);
+  });
+
+  it("requires two unique Recipe Builder ingredients", () => {
+    const privateRecipe = addingFractionsQuiz.find(
+      (question) => question.type === "recipe_builder",
+    )!;
+    const recipe = publicQuestion(privateRecipe) as Extract<
+      PublicQuizQuestion,
+      { type: "recipe_builder" }
+    >;
+    expect(isQuizDraftComplete(recipe, ["a"])).toBe(false);
+    expect(isQuizDraftComplete(recipe, ["a", "a"])).toBe(false);
+    expect(isQuizDraftComplete(recipe, ["a", "missing"])).toBe(false);
+    expect(isQuizDraftComplete(recipe, ["b", "a"])).toBe(true);
+    expect(evaluateQuizAnswer(privateRecipe, ["b", "a"]).correct).toBe(true);
+    expect(evaluateQuizAnswer(privateRecipe, ["a", "c"]).correct).toBe(false);
   });
 });
