@@ -6,6 +6,16 @@ export type MultipleChoiceQuestion = BaseQuestion & {
   options: { id: string; label: string }[];
   correctOptionId: string;
 };
+export type FractionRunnerQuestion = BaseQuestion & {
+  type: "fraction_runner";
+  lanes: { id: string; label: string }[];
+  course: {
+    stepCount: number;
+    stepDurationMs: number;
+    obstacles: { step: number; lane: number }[];
+  };
+  correctLaneId: string;
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -16,9 +26,13 @@ export type OrderingQuestion = BaseQuestion & {
   correctOrder: string[];
 };
 export type QuizQuestion =
-  MultipleChoiceQuestion | MatchPairsQuestion | OrderingQuestion;
+  | MultipleChoiceQuestion
+  | FractionRunnerQuestion
+  | MatchPairsQuestion
+  | OrderingQuestion;
 export type PublicQuizQuestion =
   | Omit<MultipleChoiceQuestion, "correctOptionId" | "explanation">
+  | Omit<FractionRunnerQuestion, "correctLaneId" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -45,6 +59,25 @@ const choice = (
   correctOptionId: correct,
   explanation,
 });
+const runner = (
+  id: string,
+  prompt: string,
+  lanes: string[],
+  correct: string,
+  explanation: string,
+  course: FractionRunnerQuestion["course"],
+): FractionRunnerQuestion => ({
+  id,
+  type: "fraction_runner",
+  prompt,
+  lanes: lanes.map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  correctLaneId: correct,
+  explanation,
+  course,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -52,6 +85,40 @@ export const addingFractionsQuiz: QuizQuestion[] = [
     ["5/7", "5/14", "1/7", "6/7"],
     "a",
     "The denominators match, so add 2 + 3 and keep 7.",
+  ),
+  runner(
+    "af-run-01",
+    "Run to the fraction that equals 1/2.",
+    ["2/4", "3/4", "2/3"],
+    "a",
+    "Two out of four equal parts is the same amount as one out of two.",
+    {
+      stepCount: 18,
+      stepDurationMs: 420,
+      obstacles: [
+        { step: 4, lane: 0 },
+        { step: 7, lane: 2 },
+        { step: 11, lane: 1 },
+        { step: 14, lane: 0 },
+      ],
+    },
+  ),
+  runner(
+    "af-run-02",
+    "Run to the sum of 1/4 + 2/4.",
+    ["2/4", "3/4", "3/8"],
+    "b",
+    "The denominators match, so add 1 + 2 and keep the denominator 4.",
+    {
+      stepCount: 18,
+      stepDurationMs: 420,
+      obstacles: [
+        { step: 3, lane: 1 },
+        { step: 7, lane: 0 },
+        { step: 12, lane: 2 },
+        { step: 15, lane: 1 },
+      ],
+    },
   ),
   choice(
     "af-q-02",
@@ -176,7 +243,12 @@ function shuffle<T>(items: T[], random: () => number) {
     .map(({ item }) => item);
 }
 export function selectQuizQuestions(count = 5, random = Math.random) {
-  const required = ["bridge_builder", "treasure_match", "order_tower"] as const;
+  const required = [
+    "bridge_builder",
+    "fraction_runner",
+    "treasure_match",
+    "order_tower",
+  ] as const;
   const selected = required.map(
     (type) =>
       shuffle(
@@ -188,7 +260,9 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
     [
       ...selected,
       ...shuffle(
-        addingFractionsQuiz.filter((q) => !selected.includes(q)),
+        addingFractionsQuiz.filter(
+          (q) => !selected.includes(q) && q.type !== "fraction_runner",
+        ),
         random,
       ).slice(0, count - selected.length),
     ],
@@ -202,6 +276,14 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       type: question.type,
       prompt: question.prompt,
       options: question.options,
+    };
+  if (question.type === "fraction_runner")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      lanes: question.lanes,
+      course: question.course,
     };
   if (question.type === "treasure_match")
     return {
@@ -226,6 +308,11 @@ export function isAnswerShape(
     return (
       typeof answer === "string" &&
       question.options.some((o) => o.id === answer)
+    );
+  if (question.type === "fraction_runner")
+    return (
+      typeof answer === "string" &&
+      question.lanes.some((lane) => lane.id === answer)
     );
   if (question.type === "treasure_match")
     return (
@@ -259,6 +346,11 @@ export function isQuizDraftComplete(
       typeof draft === "string" &&
       question.options.some((option) => option.id === draft)
     );
+  if (question.type === "fraction_runner")
+    return (
+      typeof draft === "string" &&
+      question.lanes.some((lane) => lane.id === draft)
+    );
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -288,6 +380,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
   const correct =
     question.type === "bridge_builder"
       ? answer === question.correctOptionId
+      : question.type === "fraction_runner"
+        ? answer === question.correctLaneId
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -298,6 +392,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
   const correctResponse: QuizAnswer =
     question.type === "bridge_builder"
       ? question.correctOptionId
+      : question.type === "fraction_runner"
+        ? question.correctLaneId
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;

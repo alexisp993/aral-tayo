@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { OrderTower } from "./order-tower";
+import { FractionRunner } from "./fraction-runner";
 import { TreasureMatch } from "./treasure-match";
 
 const treasureQuestion = {
@@ -20,6 +21,18 @@ const towerQuestion = {
     { id: "first", label: "Find a common denominator" },
     { id: "second", label: "Add the fractions" },
   ],
+};
+
+const runnerQuestion = {
+  id: "runner-1",
+  type: "fraction_runner" as const,
+  prompt: "Run to the answer",
+  lanes: [
+    { id: "a", label: "1/4" },
+    { id: "b", label: "1/2" },
+    { id: "c", label: "3/4" },
+  ],
+  course: { stepCount: 2, stepDurationMs: 99_999, obstacles: [] },
 };
 
 describe("quiz game controls", () => {
@@ -70,5 +83,16 @@ describe("quiz game controls", () => {
     expect(
       screen.getByRole("button", { name: "Move Find a common denominator up" }),
     ).toBeDisabled();
+  });
+
+  it("starts, steers, finishes, and can restart before locking", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<FractionRunner question={runnerQuestion} onChange={onChange} />);
+    await user.click(screen.getByRole("button", { name: /start run/i }));
+    await user.click(screen.getByRole("button", { name: "Move right" }));
+    expect(screen.getByText("Lane 3, step 0 of 2.")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /pause/i }));
+    expect(screen.getByRole("button", { name: /resume run/i })).toBeInTheDocument();
   });
 });

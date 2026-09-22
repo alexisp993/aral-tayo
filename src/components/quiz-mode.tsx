@@ -5,6 +5,7 @@ import { Button } from "@/components/ui";
 import { BridgeBuilder } from "@/components/quiz-games/bridge-builder";
 import { TreasureMatch } from "@/components/quiz-games/treasure-match";
 import { OrderTower } from "@/components/quiz-games/order-tower";
+import { FractionRunner } from "@/components/quiz-games/fraction-runner";
 import { createClient } from "@/lib/supabase/client";
 import { isQuizDraftComplete } from "@/lib/quiz";
 import type { PublicQuizQuestion, QuizAnswer } from "@/lib/quiz";
@@ -81,8 +82,8 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
     setResult(null);
     setError("");
     setDraft(undefined);
-    setLocked({});
-    setIndex(0);
+    setLocked(b.locked ?? {});
+    setIndex(b.index ?? 0);
     setState("playing");
   };
   const answer = async () => {
@@ -131,8 +132,8 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
         <section className="game-paper rounded-2xl p-7">
           <h1 className="game-display text-4xl">Fraction Quest</h1>
           <p className="mt-3 font-bold text-[#514b3e]">
-            Five checkpoints. Build a bridge, match treasure, and order your
-            tower.
+            Five checkpoints. Run fraction lanes, build bridges, match treasure,
+            and order your tower.
           </p>
           {error && <p className="mt-4 font-bold text-[#7d1713]">{error}</p>}
           <Button className="mt-6" onClick={start}>
@@ -202,6 +203,7 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
   const currentLocked = locked[q.id];
   const name = {
     bridge_builder: "Bridge Builder",
+    fraction_runner: "Fraction Runner",
     treasure_match: "Treasure Match",
     order_tower: "Order Tower",
   }[q.type];
@@ -211,6 +213,13 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
   const rendered =
     q.type === "bridge_builder" ? (
       <BridgeBuilder
+        question={q}
+        value={typeof value === "string" ? value : undefined}
+        onChange={setDraft}
+        disabled={!!currentLocked}
+      />
+    ) : q.type === "fraction_runner" ? (
+      <FractionRunner
         question={q}
         value={typeof value === "string" ? value : undefined}
         onChange={setDraft}

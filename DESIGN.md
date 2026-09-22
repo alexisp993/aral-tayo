@@ -178,7 +178,7 @@ Hearts, streak, and points appear as compact tactile chips. Progress uses a dark
 
 ### Fraction Quest games
 
-Five visible checkpoint nodes show session progress without exposing outcomes. Bridge Builder uses large button planks, Treasure Match uses labeled selects with unique destinations, and Order Tower uses explicit Move up/Move down controls. Each mechanism is keyboard and touch operable; brief placement, unlock, reorder, and checkpoint motion is removed for reduced-motion preferences.
+Five visible checkpoint nodes show session progress without exposing outcomes. Fraction Runner appears exactly once in each quest: learners steer across three lanes with keyboard or touch, dodge an authored obstacle course, pause safely when the tab is hidden, and cross a labeled finish gate to create their draft answer. Reduced-motion users advance the same deterministic course one step at a time. Bridge Builder uses large button planks, Treasure Match uses labeled selects with unique destinations, and Order Tower uses explicit Move up/Move down controls. Each mechanism is keyboard and touch operable; brief placement, unlock, reorder, runner, and checkpoint motion is removed for reduced-motion preferences.
 
 ## Do's and Don'ts
 

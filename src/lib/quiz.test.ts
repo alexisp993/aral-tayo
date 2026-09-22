@@ -17,11 +17,17 @@ describe("quiz engine", () => {
   });
 
   it("grades answers and awards the perfect-score bonus", () => {
-    const questionIds = addingFractionsQuiz.slice(0, 5).map(({ id }) => id);
+    const questions = addingFractionsQuiz.slice(0, 5);
+    const questionIds = questions.map(({ id }) => id);
     const answers = Object.fromEntries(
-      addingFractionsQuiz
-        .filter((question) => question.type === "bridge_builder")
-        .map((question) => [question.id, question.correctOptionId]),
+      questions.map((question) => [
+        question.id,
+        question.type === "bridge_builder"
+          ? question.correctOptionId
+          : question.type === "fraction_runner"
+            ? question.correctLaneId
+            : "",
+      ]),
     );
     expect(gradeQuiz(questionIds, answers)).toMatchObject({
       correctCount: 5,
@@ -31,9 +37,16 @@ describe("quiz engine", () => {
   });
 
   it("includes each game type in a quest", () => {
-    expect(
-      new Set(selectQuizQuestions(5, () => 0.5).map((q) => q.type)),
-    ).toEqual(new Set(["bridge_builder", "treasure_match", "order_tower"]));
+    const selected = selectQuizQuestions(5, () => 0.5);
+    expect(new Set(selected.map((q) => q.type))).toEqual(
+      new Set([
+        "bridge_builder",
+        "fraction_runner",
+        "treasure_match",
+        "order_tower",
+      ]),
+    );
+    expect(selected.filter((q) => q.type === "fraction_runner")).toHaveLength(1);
   });
 
   it("does not expose matching associations or ordering solution", () => {
@@ -43,8 +56,12 @@ describe("quiz engine", () => {
     const order = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "order_tower")!,
     );
+    const runner = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "fraction_runner")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
+    expect(runner).not.toHaveProperty("correctLaneId");
   });
 
   it("requires a valid selected bridge option", () => {

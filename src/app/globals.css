@@ -135,6 +135,77 @@ select {
 .checkpoint-current {
   animation: checkpoint-arrive 220ms ease-out;
 }
+.runner-character {
+  animation: runner-bob 700ms ease-in-out infinite alternate;
+}
+.runner-lane-marker {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid #17150f;
+  border-radius: 9999px;
+  background: #ffd95f;
+}
+.runner-progress > span {
+  display: block;
+  height: 100%;
+  background: #5cc98c;
+  transition: width 180ms ease-out;
+}
+.runner-road {
+  background: #fffdf4;
+  border: 2px solid #17150f;
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+.runner-lane {
+  position: relative;
+  display: grid;
+  min-height: 4.25rem;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: hidden;
+  border: 2px dashed #5d574a;
+  border-radius: 9px;
+  background: #cfe8ff;
+  padding: 0.5rem 0.75rem;
+}
+.runner-lane-active { background: #fff1b8; border-style: solid; }
+.runner-lane-number {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 2px solid #17150f;
+  border-radius: 9999px;
+  background: #fffdf4;
+  font-weight: 900;
+}
+.runner-character { justify-self: start; color: #d5453c; }
+.runner-cone { color: #d5453c; font-size: 1.35rem; line-height: 1; }
+.runner-finish-gate {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  border: 2px solid #17150f;
+  border-radius: 8px;
+  background: #91e3b7;
+  padding: 0.35rem 0.7rem;
+  font-weight: 900;
+}
+.runner-bump { animation: runner-bump 180ms ease-out; }
+@keyframes runner-bump { 0%, 100% { transform: translateX(0); } 35% { transform: translateX(-7px); } 70% { transform: translateX(5px); } }
+@keyframes runner-bob {
+  from {
+    transform: translateX(-2px) translateY(1px);
+  }
+  to {
+    transform: translateX(2px) translateY(-2px);
+  }
+}
 @keyframes treasure-unlock {
   from {
     filter: brightness(1.18);
@@ -170,4 +241,9 @@ select {
   .checkpoint-current {
     animation: none;
   }
+  .runner-character {
+    animation: none;
+  }
+  .runner-progress > span { transition: none; }
+  .runner-bump { animation: none; }
 }

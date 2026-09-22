@@ -3,7 +3,13 @@ import { z } from "zod";
 
 import { getAuthenticatedUser } from "@/lib/authenticated-user";
 import { getPracticeProgress } from "@/lib/practice-progress";
-import { findQuestion, publicQuestion, selectQuizQuestions } from "@/lib/quiz";
+import {
+  evaluateQuizAnswer,
+  findQuestion,
+  isAnswerShape,
+  publicQuestion,
+  selectQuizQuestions,
+} from "@/lib/quiz";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const bodySchema = z.object({
@@ -37,10 +43,37 @@ export async function POST(request: Request) {
       );
 
     const admin = createAdminClient();
-    const { data: existing } = await admin.from("quiz_sessions").select("id,question_ids").eq("student_id", user.id).eq("lesson_slug", parsed.data.lessonSlug).eq("status", "in_progress").order("started_at", { ascending: false }).limit(1).maybeSingle();
+    const { data: existing } = await admin.from("quiz_sessions").select("id,question_ids,answers_json").eq("student_id", user.id).eq("lesson_slug", parsed.data.lessonSlug).eq("status", "in_progress").order("started_at", { ascending: false }).limit(1).maybeSingle();
     if (existing) {
       const ids = Array.isArray(existing.question_ids) ? existing.question_ids.filter((id): id is string => typeof id === "string") : [];
-      return NextResponse.json({ sessionId: existing.id, questions: ids.map(findQuestion).filter((question): question is NonNullable<typeof question> => Boolean(question)).map(publicQuestion) });
+      const resolved = ids
+        .map(findQuestion)
+        .filter((question): question is NonNullable<typeof question> => Boolean(question));
+      const answers =
+        existing.answers_json &&
+        typeof existing.answers_json === "object" &&
+        !Array.isArray(existing.answers_json)
+          ? (existing.answers_json as Record<string, unknown>)
+          : {};
+      const locked = Object.fromEntries(
+        resolved
+          .filter(
+            (question) =>
+              answers[question.id] !== undefined &&
+              isAnswerShape(question, answers[question.id]),
+          )
+          .map((question) => [
+            question.id,
+            evaluateQuizAnswer(question, answers[question.id] as never),
+          ]),
+      );
+      const index = ids.findIndex((id) => answers[id] === undefined);
+      return NextResponse.json({
+        sessionId: existing.id,
+        questions: resolved.map(publicQuestion),
+        locked,
+        index: index === -1 ? ids.length : index,
+      });
     }
     const questions = selectQuizQuestions(5);
     const { data, error } = await admin
