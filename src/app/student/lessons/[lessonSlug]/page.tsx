@@ -41,14 +41,14 @@ export default async function LessonOverviewPage({
           </p>
         </div>
         <div
-          aria-label="One fourth plus two fourths equals three fourths"
+          aria-label={lesson.visual.label}
           className="game-chip self-center rounded-[12px] bg-[#ffd95f] px-5 py-4 text-center text-2xl font-black text-[#17150f]"
         >
-          <span>1⁄4</span>
-          <span className="text-brand px-3">+</span>
-          <span>2⁄4</span>
-          <span className="text-brand px-3">=</span>
-          <span>3⁄4</span>
+          {lesson.visual.parts.map((part, index) => (
+            <span className={index % 2 === 1 ? "text-brand px-3" : ""} key={`${part}-${index}`}>
+              {part}
+            </span>
+          ))}
         </div>
       </header>
 

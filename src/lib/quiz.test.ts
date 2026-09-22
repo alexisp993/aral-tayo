@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   addingFractionsQuiz,
+  comparingFractionsQuiz,
   evaluateQuizAnswer,
   gradeQuiz,
   isQuizDraftComplete,
@@ -51,6 +52,16 @@ describe("quiz engine", () => {
 
   it("does not create a quiz for an unregistered lesson", () => {
     expect(selectQuizQuestions("missing-lesson", 5, () => 0.5)).toEqual([]);
+  });
+
+  it("builds Comparing Fractions quests from five distinct game types", () => {
+    const selected = selectQuizQuestions("comparing-fractions", 5, () => 0.5);
+    expect(comparingFractionsQuiz).toHaveLength(9);
+    expect(selected).toHaveLength(5);
+    expect(new Set(selected.map((question) => question.type))).toHaveLength(5);
+    expect(selected.every((question) => question.id.startsWith("cf-"))).toBe(
+      true,
+    );
   });
 
   it("does not expose matching associations or ordering solution", () => {

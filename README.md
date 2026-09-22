@@ -1,6 +1,6 @@
 # Aral Tayo
 
-Philippine curriculum-aligned interactive learning for K–12 students. The first vertical slice covers Grade 5 Mathematics: Adding Fractions.
+Philippine curriculum-aligned interactive learning for K–12 students. The implemented Grade 5 Mathematics fraction lessons cover Adding Fractions and Comparing Fractions.
 
 ## Stack
 
@@ -49,6 +49,8 @@ Add the Supabase URL, publishable key, and secret/service-role key to `.env.loca
 ## Implementation Status
 
 **Adding Fractions vertical slice.** The responsive student shell, Home, Subjects, lesson overview, Learn, Flashcards, authenticated Practice, server-enforced Quiz gating, randomized Quiz sessions, XP, streaks, achievements, and leaderboard foundation are implemented. AI Tutor behavior and AI-generated curriculum remain future work.
+
+**Comparing Fractions lesson.** A second complete topic now includes Learn content, eight flashcards, seven authenticated Practice activities, independent completion tracking, and a dedicated nine-game Fraction Quest question bank.
 
 Lesson content is registered centrally. Dynamic lesson routes, Practice validation, progress tracking, and Quiz selection all resolve the same registered slug, providing the foundation for additional topics without duplicating route logic.
 

@@ -424,8 +424,94 @@ export const addingFractionsQuiz: QuizQuestion[] = [
       "A shared denominator comes before equivalent fractions and addition.",
   },
 ];
+export const comparingFractionsQuiz: QuizQuestion[] = [
+  choice(
+    "cf-bridge-01",
+    "Build the bridge to the true comparison.",
+    ["3/5 > 2/5", "3/5 < 2/5", "3/5 = 2/5"],
+    "a",
+    "The denominators match, and 3 is greater than 2.",
+  ),
+  runner(
+    "cf-run-01",
+    "Run to the fraction equivalent to 2/3.",
+    ["3/6", "4/6", "5/6"],
+    "b",
+    "Multiplying both parts of 2/3 by 2 gives 4/6.",
+    {
+      stepCount: 18,
+      stepDurationMs: 420,
+      obstacles: [
+        { step: 4, lane: 2 },
+        { step: 8, lane: 0 },
+        { step: 12, lane: 1 },
+        { step: 15, lane: 2 },
+      ],
+    },
+  ),
+  pizzaCatch(
+    "cf-pizza-01",
+    "Catch the smallest fraction.",
+    ["3/4", "1/4", "2/4"],
+    "b",
+    "With equal denominators, the smallest numerator gives the smallest fraction.",
+  ),
+  numberLineDash(
+    "cf-line-01",
+    "Dash to the point greater than 1/2 but less than 1.",
+    "d",
+    "Three fourths lies between one half and one whole.",
+  ),
+  fractionCannon(
+    "cf-cannon-01",
+    "Aim at the fraction equivalent to 3/5.",
+    ["5/10", "6/10", "8/10"],
+    "b",
+    "Multiplying both 3 and 5 by 2 gives 6/10.",
+  ),
+  recipeBuilder(
+    "cf-recipe-01",
+    "Mix exactly two ingredients to make an amount greater than 1/2 cup.",
+    ["1/4 cup fruit", "2/4 cup oats", "1/8 cup seeds", "1/8 cup milk"],
+    ["a", "b"],
+    "One fourth plus two fourths is three fourths, which is greater than one half.",
+  ),
+  fractionMemory(
+    "cf-memory-01",
+    "Clear the board by matching equivalent fractions.",
+    ["1/2", "2/3", "2/4", "6/8", "4/6", "3/4"],
+    [["a", "c"], ["b", "e"], ["d", "f"]],
+    "Equivalent fractions name the same value even when their numbers differ.",
+  ),
+  {
+    id: "cf-match-01",
+    type: "treasure_match",
+    prompt: "Match each fraction with its relationship to 1/2.",
+    pairs: [
+      { source: "1/4", target: "Less than 1/2" },
+      { source: "3/6", target: "Equal to 1/2" },
+      { source: "3/4", target: "Greater than 1/2" },
+    ],
+    explanation:
+      "One fourth is below one half, three sixths equals one half, and three fourths is above one half.",
+  },
+  {
+    id: "cf-order-01",
+    type: "order_tower",
+    prompt: "Put the steps for comparing 2/3 and 3/4 in order.",
+    items: [
+      { id: "b", label: "Rewrite them as 8/12 and 9/12" },
+      { id: "c", label: "Compare 8 and 9, so 2/3 < 3/4" },
+      { id: "a", label: "Choose 12 as a common denominator" },
+    ],
+    correctOrder: ["a", "b", "c"],
+    explanation:
+      "Choose a common denominator, rewrite both fractions, then compare their numerators.",
+  },
+];
 const quizBanks: Record<string, QuizQuestion[]> = {
   "adding-fractions": addingFractionsQuiz,
+  "comparing-fractions": comparingFractionsQuiz,
 };
 export function findQuestion(id: string) {
   return Object.values(quizBanks)

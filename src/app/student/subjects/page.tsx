@@ -62,7 +62,7 @@ export default function SubjectsPage() {
               </h2>
               <p className="text-ink-muted mt-2 max-w-[65ch] leading-7">
                 {mathematics.description} Open the Grade 5 Fractions unit and
-                explore Adding Fractions.
+                explore two complete fraction lessons.
               </p>
             </div>
             <span className="text-brand flex min-h-11 items-center gap-2 font-bold">

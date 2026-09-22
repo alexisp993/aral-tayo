@@ -9,7 +9,11 @@ import {
 } from "lucide-react";
 
 import { Card, LinkButton } from "@/components/ui";
-import { addingFractionsLesson, getSubject, mathUnits } from "@/lib/curriculum";
+import { getSubject, lessons, mathUnits } from "@/lib/curriculum";
+
+function lessonCountLabel(count: number) {
+  return `${count} ${count === 1 ? "lesson" : "lessons"}`;
+}
 
 export function generateStaticParams() {
   return [{ subjectSlug: "mathematics" }];
@@ -74,7 +78,9 @@ export default async function SubjectDetailPage({
                   </p>
                 </div>
                 <span className="text-ink-muted text-xs font-bold">
-                  {unit.current ? `${unit.lessonCount} lesson` : "Coming soon"}
+                  {unit.current
+                    ? lessonCountLabel(unit.lessonCount)
+                    : "Coming soon"}
                 </span>
               </Card>
             ))}
@@ -101,36 +107,28 @@ export default async function SubjectDetailPage({
               </span>
             </div>
 
-            <div className="mt-6 rounded-2xl bg-[#f8fbff] p-4 md:p-5">
-              <div className="flex items-start gap-3">
-                <span className="bg-brand grid size-9 shrink-0 place-items-center rounded-xl font-black text-white">
-                  1
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-ink font-black">
-                    {addingFractionsLesson.title}
-                  </h3>
-                  <p className="text-ink-muted mt-1 text-sm leading-6">
-                    {addingFractionsLesson.summary}
-                  </p>
+            <div className="mt-6 space-y-4">
+              {lessons.map((lesson, index) => (
+                <div className="rounded-[12px] bg-[#f8fbff] p-4 md:p-5" key={lesson.slug}>
+                  <div className="flex items-start gap-3">
+                    <span className="bg-brand grid size-9 shrink-0 place-items-center rounded-xl font-black text-white">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-ink font-black">{lesson.title}</h3>
+                      <p className="text-ink-muted mt-1 text-sm leading-6">{lesson.summary}</p>
+                    </div>
+                    <Check aria-label="Available" className="text-[#12a65a]" size={22} />
+                  </div>
+                  <LinkButton className="mt-4 w-full" href={`/student/lessons/${lesson.slug}`}>
+                    Open lesson <ArrowRight aria-hidden="true" size={18} />
+                  </LinkButton>
                 </div>
-                <Check
-                  aria-label="Available"
-                  className="text-[#12a65a]"
-                  size={22}
-                />
-              </div>
-              <LinkButton
-                className="mt-4 w-full"
-                href={`/student/lessons/${addingFractionsLesson.slug}`}
-              >
-                Open lesson <ArrowRight aria-hidden="true" size={18} />
-              </LinkButton>
+              ))}
             </div>
 
             <div className="text-ink-muted mt-4 flex min-h-11 items-center gap-3 rounded-xl bg-slate-50 px-4 text-sm">
-              <LockKeyhole aria-hidden="true" size={18} /> More lessons will
-              appear when validated seed content is available.
+              <LockKeyhole aria-hidden="true" size={18} /> More fraction lessons will appear when validated seed content is available.
             </div>
           </Card>
         </section>
