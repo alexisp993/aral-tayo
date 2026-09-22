@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   addingFractionsLesson,
   comparingFractionsLesson,
+  subtractingFractionsLesson,
   getLesson,
   getSubject,
   lessons,
@@ -13,7 +14,8 @@ describe("curriculum seed", () => {
     expect(getSubject("mathematics")?.available).toBe(true);
     expect(getLesson("adding-fractions")).toBe(addingFractionsLesson);
     expect(getLesson("comparing-fractions")).toBe(comparingFractionsLesson);
-    expect(lessons).toHaveLength(2);
+    expect(getLesson("subtracting-fractions")).toBe(subtractingFractionsLesson);
+    expect(lessons).toHaveLength(3);
     expect(getLesson("missing-lesson")).toBeUndefined();
   });
 });

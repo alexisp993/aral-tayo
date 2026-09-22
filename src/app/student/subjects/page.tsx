@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui";
-import { subjects } from "@/lib/curriculum";
+import { lessons, subjects } from "@/lib/curriculum";
 
 const icons = {
   calculator: Calculator,
@@ -27,6 +27,7 @@ const icons = {
 
 export default function SubjectsPage() {
   const mathematics = subjects[0];
+  const lessonCount = lessons.length;
 
   return (
     <>
@@ -62,7 +63,7 @@ export default function SubjectsPage() {
               </h2>
               <p className="text-ink-muted mt-2 max-w-[65ch] leading-7">
                 {mathematics.description} Open the Grade 5 Fractions unit and
-                explore two complete fraction lessons.
+                explore {lessonCount} complete fraction lessons.
               </p>
             </div>
             <span className="text-brand flex min-h-11 items-center gap-2 font-bold">

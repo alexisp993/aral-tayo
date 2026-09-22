@@ -509,9 +509,21 @@ export const comparingFractionsQuiz: QuizQuestion[] = [
       "Choose a common denominator, rewrite both fractions, then compare their numerators.",
   },
 ];
+export const subtractingFractionsQuiz: QuizQuestion[] = [
+  choice("sf-bridge-01", "Which subtraction has a difference of 3/5?", ["4/5 − 1/5", "5/5 − 1/5", "3/5 − 1/5"], "a", "Four fifths minus one fifth is three fifths."),
+  runner("sf-run-01", "Run to the difference: 5/8 − 2/8.", ["3/8", "3/16", "2/8"], "a", "Keep eighths and subtract 5 − 2.", { stepCount: 18, stepDurationMs: 420, obstacles: [{ step: 4, lane: 1 }, { step: 8, lane: 2 }, { step: 12, lane: 0 }, { step: 15, lane: 1 }] }),
+  pizzaCatch("sf-pizza-01", "Catch the slice card for 3/4 − 1/2.", ["1/4", "1/2", "2/4"], "a", "One half is two fourths, so three fourths minus two fourths is one fourth."),
+  numberLineDash("sf-line-01", "Dash to the point that shows 1 − 1/4.", "d", "One whole is four fourths; subtract one fourth to reach three fourths."),
+  fractionCannon("sf-cannon-01", "Aim at the difference: 3/4 − 1/2.", ["1/4", "1/2", "2/4"], "a", "Rewrite one half as two fourths, then subtract."),
+  recipeBuilder("sf-recipe-01", "Mix exactly two ingredients to make the amount left after 1 cup − 1/4 cup.", ["1/4 cup berries", "2/4 cup oats", "1/8 cup seeds", "3/8 cup yogurt"], ["a", "b"], "One whole minus one fourth is three fourths; one fourth plus two fourths makes three fourths."),
+  fractionMemory("sf-memory-01", "Clear the board by matching equivalent fractions before you subtract.", ["1/2", "2/4", "3/4", "6/8", "1/4", "2/8"], [["a", "b"], ["c", "d"], ["e", "f"]], "Equivalent fractions let you make common denominators for subtraction."),
+  { id: "sf-match-01", type: "treasure_match", prompt: "Match each subtraction with its difference.", pairs: [{ source: "5/8 − 2/8", target: "3/8" }, { source: "4/6 − 1/6", target: "3/6" }, { source: "3/4 − 1/2", target: "1/4" }], explanation: "Use a common denominator, then subtract the numerators." },
+  { id: "sf-order-01", type: "order_tower", prompt: "Put the steps for 3/4 − 1/2 in order.", items: [{ id: "b", label: "Rewrite 1/2 as 2/4" }, { id: "c", label: "Subtract 3/4 − 2/4 = 1/4" }, { id: "a", label: "Choose 4 as a common denominator" }], correctOrder: ["a", "b", "c"], explanation: "Find a common denominator, rewrite, then subtract." },
+];
 const quizBanks: Record<string, QuizQuestion[]> = {
   "adding-fractions": addingFractionsQuiz,
   "comparing-fractions": comparingFractionsQuiz,
+  "subtracting-fractions": subtractingFractionsQuiz,
 };
 export function findQuestion(id: string) {
   return Object.values(quizBanks)

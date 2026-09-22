@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   addingFractionsQuiz,
   comparingFractionsQuiz,
+  subtractingFractionsQuiz,
   evaluateQuizAnswer,
   gradeQuiz,
   isQuizDraftComplete,
@@ -62,6 +63,14 @@ describe("quiz engine", () => {
     expect(selected.every((question) => question.id.startsWith("cf-"))).toBe(
       true,
     );
+  });
+
+  it("builds Subtracting Fractions quests from five distinct game types", () => {
+    const selected = selectQuizQuestions("subtracting-fractions", 5, () => 0.5);
+    expect(subtractingFractionsQuiz).toHaveLength(9);
+    expect(selected).toHaveLength(5);
+    expect(new Set(selected.map((question) => question.type))).toHaveLength(5);
+    expect(selected.every((question) => question.id.startsWith("sf-"))).toBe(true);
   });
 
   it("does not expose matching associations or ordering solution", () => {

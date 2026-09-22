@@ -16,9 +16,19 @@ describe("lesson content registry", () => {
     ).toBe(true);
   });
 
+  it("registers a complete Subtracting Fractions lesson", () => {
+    const seed = getLessonSeed("subtracting-fractions");
+    expect(seed?.lesson.title).toBe("Subtracting Fractions");
+    expect(seed?.lesson.learn_blocks).toHaveLength(5);
+    expect(seed?.lesson.flashcards).toHaveLength(8);
+    expect(seed?.lesson.practice.activities).toHaveLength(7);
+    expect(seed?.lesson.practice.activities.every((activity) => activity.id.startsWith("sf-pr-"))).toBe(true);
+  });
+
   it("rejects lessons without registered content", () => {
     expect(isLessonSlug("adding-fractions")).toBe(true);
     expect(isLessonSlug("comparing-fractions")).toBe(true);
+    expect(isLessonSlug("subtracting-fractions")).toBe(true);
     expect(isLessonSlug("missing-lesson")).toBe(false);
     expect(getLessonSeed("missing-lesson")).toBeUndefined();
   });

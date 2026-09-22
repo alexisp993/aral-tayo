@@ -87,7 +87,7 @@ export const mathUnits = [
   {
     title: "Fractions",
     description: "Equivalent fractions and fraction operations",
-    lessonCount: 2,
+    lessonCount: 3,
     current: true,
   },
   {
@@ -146,7 +146,32 @@ export const comparingFractionsLesson = {
   visual: { label: "Three fourths is greater than two thirds", parts: ["3⁄4", ">", "2⁄3"] },
 } as const;
 
-export const lessons = [addingFractionsLesson, comparingFractionsLesson] as const;
+export const subtractingFractionsLesson = {
+  title: "Subtracting Fractions",
+  slug: "subtracting-fractions",
+  subject: "Mathematics",
+  subjectSlug: "mathematics",
+  grade: "Grade 5",
+  quarter: "Quarter 1",
+  unit: "Unit 4: Fractions",
+  estimatedMinutes: 25,
+  summary:
+    "Learn to subtract fractions with like and unlike denominators by using visual models, equivalent fractions, and common denominators.",
+  competencies: [
+    "Subtract fractions with the same denominator.",
+    "Find the difference between fractions using visual models.",
+    "Use equivalent fractions to make common denominators.",
+    "Subtract fractions with different denominators.",
+    "Solve simple real-life problems involving subtraction of fractions.",
+  ],
+  visual: { label: "Three fourths minus one fourth equals one half", parts: ["3⁄4", "−", "1⁄4", "=", "1⁄2"] },
+} as const;
+
+export const lessons = [
+  addingFractionsLesson,
+  comparingFractionsLesson,
+  subtractingFractionsLesson,
+] as const;
 
 export function getSubject(slug: string) {
   return subjects.find((subject) => subject.slug === slug);
