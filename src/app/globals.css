@@ -239,6 +239,47 @@ select {
   background: #91e3b7;
   box-shadow: 0 5px 0 #17150f, 0 8px 12px rgba(23, 21, 15, 0.12);
 }
+.number-line-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+}
+.number-line-track::before {
+  position: absolute;
+  right: 8%;
+  bottom: 2.05rem;
+  left: 8%;
+  height: 4px;
+  border: 1px solid #17150f;
+  background: #17150f;
+  content: "";
+}
+.number-line-point {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
+  grid-template-rows: 2.25rem 1.25rem auto;
+  justify-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+.number-line-marker {
+  color: #d5453c;
+  filter: drop-shadow(0 3px 0 #17150f);
+  animation: number-line-hop 220ms ease-out;
+}
+.number-line-tick {
+  width: 4px;
+  height: 1.25rem;
+  border: 1px solid #17150f;
+  background: #17150f;
+}
+@keyframes number-line-hop {
+  from { transform: translateY(5px); }
+  to { transform: translateY(0); }
+}
 @keyframes runner-bump { 0%, 100% { transform: translateX(0); } 35% { transform: translateX(-7px); } 70% { transform: translateX(5px); } }
 @keyframes runner-bob {
   from {
@@ -289,4 +330,5 @@ select {
   .runner-progress > span { transition: none; }
   .runner-bump { animation: none; }
   .pizza-slice-card { transition: none; }
+  .number-line-marker { animation: none; }
 }

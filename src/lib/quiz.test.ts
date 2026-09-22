@@ -28,6 +28,8 @@ describe("quiz engine", () => {
             ? question.correctLaneId
             : question.type === "pizza_catch"
               ? question.correctSliceId
+              : question.type === "number_line_dash"
+                ? question.correctPositionId
             : "",
       ]),
     );
@@ -38,19 +40,10 @@ describe("quiz engine", () => {
     });
   });
 
-  it("includes each game type in a quest", () => {
+  it("shuffles five distinct game types in a quest", () => {
     const selected = selectQuizQuestions(5, () => 0.5);
-    expect(new Set(selected.map((q) => q.type))).toEqual(
-      new Set([
-        "bridge_builder",
-        "fraction_runner",
-        "pizza_catch",
-        "treasure_match",
-        "order_tower",
-      ]),
-    );
-    expect(selected.filter((q) => q.type === "fraction_runner")).toHaveLength(1);
-    expect(selected.filter((q) => q.type === "pizza_catch")).toHaveLength(1);
+    expect(new Set(selected.map((q) => q.type))).toHaveLength(5);
+    expect(selected).toHaveLength(5);
   });
 
   it("does not expose matching associations or ordering solution", () => {
@@ -66,11 +59,16 @@ describe("quiz engine", () => {
     const pizza = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "pizza_catch")!,
     );
+    const numberLine = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "number_line_dash")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
     expect(runner).not.toHaveProperty("correctLaneId");
     expect(pizza).not.toHaveProperty("correctSliceId");
     expect(pizza).not.toHaveProperty("explanation");
+    expect(numberLine).not.toHaveProperty("correctPositionId");
+    expect(numberLine).not.toHaveProperty("explanation");
   });
 
   it("requires a valid selected bridge option", () => {

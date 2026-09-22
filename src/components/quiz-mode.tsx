@@ -7,6 +7,7 @@ import { TreasureMatch } from "@/components/quiz-games/treasure-match";
 import { OrderTower } from "@/components/quiz-games/order-tower";
 import { FractionRunner } from "@/components/quiz-games/fraction-runner";
 import { PizzaCatch } from "@/components/quiz-games/pizza-catch";
+import { NumberLineDash } from "@/components/quiz-games/number-line-dash";
 import { createClient } from "@/lib/supabase/client";
 import { isQuizDraftComplete } from "@/lib/quiz";
 import type { PublicQuizQuestion, QuizAnswer } from "@/lib/quiz";
@@ -133,8 +134,8 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
         <section className="game-paper rounded-2xl p-7">
           <h1 className="game-display text-4xl">Fraction Quest</h1>
           <p className="mt-3 font-bold text-[#514b3e]">
-            Five checkpoints. Catch pizza slices, run fraction lanes, build
-            bridges, match treasure, and order your tower.
+            Five shuffled game checkpoints. Catch, dash, build, match, and
+            reorder your way through fractions.
           </p>
           {error && <p className="mt-4 font-bold text-[#7d1713]">{error}</p>}
           <Button className="mt-6" onClick={start}>
@@ -206,6 +207,7 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
     bridge_builder: "Bridge Builder",
     fraction_runner: "Fraction Runner",
     pizza_catch: "Pizza Slice Catch",
+    number_line_dash: "Number-Line Dash",
     treasure_match: "Treasure Match",
     order_tower: "Order Tower",
   }[q.type];
@@ -229,6 +231,13 @@ export function QuizMode({ lessonSlug }: { lessonSlug: string }) {
       />
     ) : q.type === "pizza_catch" ? (
       <PizzaCatch
+        question={q}
+        value={typeof value === "string" ? value : undefined}
+        onChange={setDraft}
+        disabled={!!currentLocked}
+      />
+    ) : q.type === "number_line_dash" ? (
+      <NumberLineDash
         question={q}
         value={typeof value === "string" ? value : undefined}
         onChange={setDraft}

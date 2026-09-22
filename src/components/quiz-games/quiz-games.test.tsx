@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { OrderTower } from "./order-tower";
 import { FractionRunner } from "./fraction-runner";
 import { PizzaCatch } from "./pizza-catch";
+import { NumberLineDash } from "./number-line-dash";
 import { TreasureMatch } from "./treasure-match";
 
 const treasureQuestion = {
@@ -45,6 +46,17 @@ const pizzaQuestion = {
     { id: "b", label: "1/2" },
     { id: "c", label: "3/4" },
   ],
+  course: { stepCount: 2, stepDurationMs: 99_999 },
+};
+
+const numberLineQuestion = {
+  id: "line-1",
+  type: "number_line_dash" as const,
+  prompt: "Dash to the answer",
+  positions: ["0", "1/4", "1/2", "3/4", "1"].map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
   course: { stepCount: 2, stepDurationMs: 99_999 },
 };
 
@@ -117,5 +129,14 @@ describe("quiz game controls", () => {
     await user.click(screen.getByRole("button", { name: "Move plate right" }));
     expect(screen.getByLabelText("Plate in lane 3")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /pause/i })).toBeEnabled();
+  });
+
+  it("starts Number-Line Dash and moves its marker", async () => {
+    const user = userEvent.setup();
+    render(<NumberLineDash question={numberLineQuestion} onChange={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: /start dash/i }));
+    expect(screen.getByLabelText("Marker at 1/2")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Move marker right" }));
+    expect(screen.getByLabelText("Marker at 3/4")).toBeInTheDocument();
   });
 });

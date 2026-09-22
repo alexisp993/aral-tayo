@@ -22,6 +22,12 @@ export type PizzaCatchQuestion = BaseQuestion & {
   course: { stepCount: number; stepDurationMs: number };
   correctSliceId: string;
 };
+export type NumberLineDashQuestion = BaseQuestion & {
+  type: "number_line_dash";
+  positions: { id: string; label: string }[];
+  course: { stepCount: number; stepDurationMs: number };
+  correctPositionId: string;
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -35,12 +41,14 @@ export type QuizQuestion =
   | MultipleChoiceQuestion
   | FractionRunnerQuestion
   | PizzaCatchQuestion
+  | NumberLineDashQuestion
   | MatchPairsQuestion
   | OrderingQuestion;
 export type PublicQuizQuestion =
   | Omit<MultipleChoiceQuestion, "correctOptionId" | "explanation">
   | Omit<FractionRunnerQuestion, "correctLaneId" | "explanation">
   | Omit<PizzaCatchQuestion, "correctSliceId" | "explanation">
+  | Omit<NumberLineDashQuestion, "correctPositionId" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -104,6 +112,23 @@ const pizzaCatch = (
   correctSliceId: correct,
   explanation,
 });
+const numberLineDash = (
+  id: string,
+  prompt: string,
+  correct: string,
+  explanation: string,
+): NumberLineDashQuestion => ({
+  id,
+  type: "number_line_dash",
+  prompt,
+  positions: ["0", "1/4", "1/2", "3/4", "1"].map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  course: { stepCount: 12, stepDurationMs: 500 },
+  correctPositionId: correct,
+  explanation,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -135,6 +160,18 @@ export const addingFractionsQuiz: QuizQuestion[] = [
     ["2/4", "3/4", "3/8"],
     "b",
     "The denominators match, so add 1 + 2 and keep the denominator 4.",
+  ),
+  numberLineDash(
+    "af-line-01",
+    "Dash to the point that shows 1/4 + 1/4.",
+    "c",
+    "One fourth plus one fourth is two fourths, which equals one half.",
+  ),
+  numberLineDash(
+    "af-line-02",
+    "Dash to the point that shows 1/2 + 1/4.",
+    "d",
+    "Rewrite one half as two fourths, then add one fourth to make three fourths.",
   ),
   pizzaCatch(
     "af-pizza-02",
@@ -283,35 +320,23 @@ function shuffle<T>(items: T[], random: () => number) {
     .map(({ item }) => item);
 }
 export function selectQuizQuestions(count = 5, random = Math.random) {
-  const required = [
+  const gameTypes = [
     "bridge_builder",
     "fraction_runner",
     "pizza_catch",
+    "number_line_dash",
     "treasure_match",
     "order_tower",
   ] as const;
-  const selected = required.map(
+  const selectedTypes = shuffle([...gameTypes], random).slice(0, count);
+  const selected = selectedTypes.map(
     (type) =>
       shuffle(
         addingFractionsQuiz.filter((q) => q.type === type),
         random,
       )[0],
   );
-  return shuffle(
-    [
-      ...selected,
-      ...shuffle(
-        addingFractionsQuiz.filter(
-          (q) =>
-            !selected.includes(q) &&
-            q.type !== "fraction_runner" &&
-            q.type !== "pizza_catch",
-        ),
-        random,
-      ).slice(0, count - selected.length),
-    ],
-    random,
-  ).slice(0, count);
+  return shuffle(selected, random);
 }
 export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
   if (question.type === "bridge_builder")
@@ -335,6 +360,14 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       type: question.type,
       prompt: question.prompt,
       slices: question.slices,
+      course: question.course,
+    };
+  if (question.type === "number_line_dash")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      positions: question.positions,
       course: question.course,
     };
   if (question.type === "treasure_match")
@@ -370,6 +403,11 @@ export function isAnswerShape(
     return (
       typeof answer === "string" &&
       question.slices.some((slice) => slice.id === answer)
+    );
+  if (question.type === "number_line_dash")
+    return (
+      typeof answer === "string" &&
+      question.positions.some((position) => position.id === answer)
     );
   if (question.type === "treasure_match")
     return (
@@ -413,6 +451,11 @@ export function isQuizDraftComplete(
       typeof draft === "string" &&
       question.slices.some((slice) => slice.id === draft)
     );
+  if (question.type === "number_line_dash")
+    return (
+      typeof draft === "string" &&
+      question.positions.some((position) => position.id === draft)
+    );
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -446,6 +489,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? answer === question.correctLaneId
       : question.type === "pizza_catch"
         ? answer === question.correctSliceId
+      : question.type === "number_line_dash"
+        ? answer === question.correctPositionId
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -460,6 +505,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
         ? question.correctLaneId
       : question.type === "pizza_catch"
         ? question.correctSliceId
+      : question.type === "number_line_dash"
+        ? question.correctPositionId
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;
