@@ -1,4 +1,7 @@
 import { GamificationDashboard } from "@/components/gamification-dashboard";
+import { LessonDashboard } from "@/components/lesson-dashboard";
+import { Card } from "@/components/ui";
+import { lessons } from "@/lib/curriculum";
 
 export default function ProgressPage() {
   return (
@@ -8,13 +11,38 @@ export default function ProgressPage() {
           Your progress
         </h1>
         <p className="mt-3 max-w-[65ch] text-lg font-bold text-[#514b3e]">
-          See the XP, streaks, quiz results, and achievements saved to your
-          account.
+          See what you have completed, continue each lesson, and review the
+          rewards saved to your account.
         </p>
       </header>
-      <div className="mt-7">
-        <GamificationDashboard />
-      </div>
+      <Card className="mt-7 p-6 md:p-7">
+        <div className="mb-5">
+          <h2 className="game-display text-3xl font-semibold text-[#17150f]">
+            Curriculum progress
+          </h2>
+          <p className="mt-2 max-w-[65ch] font-bold text-[#514b3e]">
+            Each lesson keeps its own Learn, Flashcards, Practice, and Quiz
+            progress.
+          </p>
+        </div>
+        <LessonDashboard lessons={lessons} showSummary />
+      </Card>
+
+      <section className="mt-9" aria-labelledby="rewards-heading">
+        <h2
+          className="game-display text-3xl font-semibold text-[#17150f]"
+          id="rewards-heading"
+        >
+          Rewards and milestones
+        </h2>
+        <p className="mt-2 max-w-[65ch] font-bold text-[#514b3e]">
+          Your XP, achievements, streak, and leaderboard standing update as
+          you finish quests.
+        </p>
+        <div className="mt-5">
+          <GamificationDashboard />
+        </div>
+      </section>
     </>
   );
 }

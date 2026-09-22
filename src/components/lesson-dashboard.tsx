@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, BookOpen, Check, Layers3, Play, Trophy } from "lucide-react";
 
 import { ProgressBar, buttonStyles } from "@/components/ui";
@@ -34,11 +35,41 @@ export function getNextLessonAction(progress: LessonProgress) {
   return { label: "Review lesson", path: "" };
 }
 
-function LessonJourney({ lesson }: { lesson: LessonSummary }) {
+type LessonSnapshot = { completed: number; loading: boolean };
+
+export function summarizeLessonProgress(
+  lessonCount: number,
+  snapshots: Record<string, LessonSnapshot>,
+) {
+  const values = Object.values(snapshots);
+  return {
+    completedSteps: values.reduce((total, item) => total + item.completed, 0),
+    totalSteps: lessonCount * steps.length,
+    completedLessons: values.filter((item) => item.completed === steps.length)
+      .length,
+    activeLessons: values.filter(
+      (item) => item.completed > 0 && item.completed < steps.length,
+    ).length,
+    loading:
+      values.length < lessonCount || values.some((item) => item.loading),
+  };
+}
+
+function LessonJourney({
+  lesson,
+  onProgress,
+}: {
+  lesson: LessonSummary;
+  onProgress?: (slug: string, snapshot: LessonSnapshot) => void;
+}) {
   const { progress, loading } = useLessonProgress(lesson.slug);
   const completed = steps.filter((step) => progress[step.key]).length;
   const action = getNextLessonAction(progress);
   const href = `/student/lessons/${lesson.slug}${action.path ? `/${action.path}` : ""}`;
+
+  useEffect(() => {
+    onProgress?.(lesson.slug, { completed, loading });
+  }, [completed, lesson.slug, loading, onProgress]);
 
   return (
     <article className="rounded-[12px] border-2 border-[#17150f] bg-[#fffdf4] p-5">
@@ -102,14 +133,63 @@ function LessonJourney({ lesson }: { lesson: LessonSummary }) {
 
 export function LessonDashboard({
   lessons,
+  showSummary = false,
 }: {
   lessons: readonly LessonSummary[];
+  showSummary?: boolean;
 }) {
+  const [snapshots, setSnapshots] = useState<Record<string, LessonSnapshot>>(
+    {},
+  );
+  const recordProgress = useCallback(
+    (slug: string, snapshot: LessonSnapshot) =>
+      setSnapshots((current) =>
+        current[slug]?.completed === snapshot.completed &&
+        current[slug]?.loading === snapshot.loading
+          ? current
+          : { ...current, [slug]: snapshot },
+      ),
+    [],
+  );
+  const summary = summarizeLessonProgress(lessons.length, snapshots);
+
   return (
-    <div className="space-y-4">
-      {lessons.map((lesson) => (
-        <LessonJourney key={lesson.slug} lesson={lesson} />
-      ))}
+    <div>
+      {showSummary && (
+        <dl className="mb-5 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-[12px] bg-[#cfe8ff] p-4 text-[#17150f]">
+            <dt className="text-xs font-extrabold uppercase">Steps complete</dt>
+            <dd className="mt-1 text-2xl font-black tabular-nums">
+              {summary.loading
+                ? "—"
+                : `${summary.completedSteps}/${summary.totalSteps}`}
+            </dd>
+          </div>
+          <div className="rounded-[12px] bg-[#91e3b7] p-4 text-[#17150f]">
+            <dt className="text-xs font-extrabold uppercase">
+              Lessons complete
+            </dt>
+            <dd className="mt-1 text-2xl font-black tabular-nums">
+              {summary.loading ? "—" : summary.completedLessons}
+            </dd>
+          </div>
+          <div className="rounded-[12px] bg-[#ffd95f] p-4 text-[#17150f]">
+            <dt className="text-xs font-extrabold uppercase">In progress</dt>
+            <dd className="mt-1 text-2xl font-black tabular-nums">
+              {summary.loading ? "—" : summary.activeLessons}
+            </dd>
+          </div>
+        </dl>
+      )}
+      <div className="space-y-4">
+        {lessons.map((lesson) => (
+          <LessonJourney
+            key={lesson.slug}
+            lesson={lesson}
+            onProgress={showSummary ? recordProgress : undefined}
+          />
+        ))}
+      </div>
     </div>
   );
 }

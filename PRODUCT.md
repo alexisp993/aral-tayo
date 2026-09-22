@@ -24,5 +24,6 @@ Aral Tayo is a Philippine learning platform for students. Its student experience
 - The Adding Fractions Fraction Quest shuffles five distinct checkpoints from nine games: Fraction Memory, Recipe Builder, Fraction Cannon, Number-Line Dash, Pizza Slice Catch, Fraction Runner, Bridge Builder, Treasure Match, and Order Tower; immutable server-locked answers persist across refresh before account-linked XP, streaks, and achievements are awarded.
 - Comparing Fractions provides its own Learn sequence, eight flashcards, seven authenticated Practice activities, and nine-game Quiz bank with independent progress and gating.
 - Home presents every registered lesson with account-linked four-step progress and a contextual next action.
+- Progress summarizes completed curriculum steps and lesson status before account-wide XP, achievements, streaks, and leaderboard results.
 - Progress and Achievements provide the first learner-statistics and leaderboard surfaces.
 - AI Tutor behavior and AI-generated curriculum remain future scope.

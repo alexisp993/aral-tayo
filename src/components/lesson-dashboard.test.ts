@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getNextLessonAction } from "@/components/lesson-dashboard";
+import {
+  getNextLessonAction,
+  summarizeLessonProgress,
+} from "@/components/lesson-dashboard";
 import type { LessonProgress } from "@/lib/use-lesson-progress";
 
 const progress = (completed: number): LessonProgress => ({
@@ -21,5 +24,28 @@ describe("lesson dashboard next action", () => {
     [4, "Review lesson", ""],
   ])("routes %i completed steps to the right action", (count, label, path) => {
     expect(getNextLessonAction(progress(count))).toEqual({ label, path });
+  });
+
+  it("summarizes independent lesson snapshots", () => {
+    expect(
+      summarizeLessonProgress(2, {
+        "adding-fractions": { completed: 4, loading: false },
+        "comparing-fractions": { completed: 2, loading: false },
+      }),
+    ).toEqual({
+      completedSteps: 6,
+      totalSteps: 8,
+      completedLessons: 1,
+      activeLessons: 1,
+      loading: false,
+    });
+  });
+
+  it("keeps totals loading until every lesson reports", () => {
+    expect(
+      summarizeLessonProgress(2, {
+        "adding-fractions": { completed: 4, loading: false },
+      }).loading,
+    ).toBe(true);
   });
 });
