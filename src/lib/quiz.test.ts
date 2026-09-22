@@ -26,6 +26,8 @@ describe("quiz engine", () => {
           ? question.correctOptionId
           : question.type === "fraction_runner"
             ? question.correctLaneId
+            : question.type === "pizza_catch"
+              ? question.correctSliceId
             : "",
       ]),
     );
@@ -42,11 +44,13 @@ describe("quiz engine", () => {
       new Set([
         "bridge_builder",
         "fraction_runner",
+        "pizza_catch",
         "treasure_match",
         "order_tower",
       ]),
     );
     expect(selected.filter((q) => q.type === "fraction_runner")).toHaveLength(1);
+    expect(selected.filter((q) => q.type === "pizza_catch")).toHaveLength(1);
   });
 
   it("does not expose matching associations or ordering solution", () => {
@@ -59,9 +63,14 @@ describe("quiz engine", () => {
     const runner = publicQuestion(
       addingFractionsQuiz.find((q) => q.type === "fraction_runner")!,
     );
+    const pizza = publicQuestion(
+      addingFractionsQuiz.find((q) => q.type === "pizza_catch")!,
+    );
     expect(match).not.toHaveProperty("pairs");
     expect(order).not.toHaveProperty("correctOrder");
     expect(runner).not.toHaveProperty("correctLaneId");
+    expect(pizza).not.toHaveProperty("correctSliceId");
+    expect(pizza).not.toHaveProperty("explanation");
   });
 
   it("requires a valid selected bridge option", () => {

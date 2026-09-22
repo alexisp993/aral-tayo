@@ -16,6 +16,12 @@ export type FractionRunnerQuestion = BaseQuestion & {
   };
   correctLaneId: string;
 };
+export type PizzaCatchQuestion = BaseQuestion & {
+  type: "pizza_catch";
+  slices: { id: string; label: string }[];
+  course: { stepCount: number; stepDurationMs: number };
+  correctSliceId: string;
+};
 export type MatchPairsQuestion = BaseQuestion & {
   type: "treasure_match";
   pairs: { source: string; target: string }[];
@@ -28,11 +34,13 @@ export type OrderingQuestion = BaseQuestion & {
 export type QuizQuestion =
   | MultipleChoiceQuestion
   | FractionRunnerQuestion
+  | PizzaCatchQuestion
   | MatchPairsQuestion
   | OrderingQuestion;
 export type PublicQuizQuestion =
   | Omit<MultipleChoiceQuestion, "correctOptionId" | "explanation">
   | Omit<FractionRunnerQuestion, "correctLaneId" | "explanation">
+  | Omit<PizzaCatchQuestion, "correctSliceId" | "explanation">
   | {
       id: string;
       type: "treasure_match";
@@ -78,6 +86,24 @@ const runner = (
   explanation,
   course,
 });
+const pizzaCatch = (
+  id: string,
+  prompt: string,
+  slices: string[],
+  correct: string,
+  explanation: string,
+): PizzaCatchQuestion => ({
+  id,
+  type: "pizza_catch",
+  prompt,
+  slices: slices.map((label, index) => ({
+    id: String.fromCharCode(97 + index),
+    label,
+  })),
+  course: { stepCount: 14, stepDurationMs: 460 },
+  correctSliceId: correct,
+  explanation,
+});
 export const addingFractionsQuiz: QuizQuestion[] = [
   choice(
     "af-q-01",
@@ -102,6 +128,20 @@ export const addingFractionsQuiz: QuizQuestion[] = [
         { step: 14, lane: 0 },
       ],
     },
+  ),
+  pizzaCatch(
+    "af-pizza-01",
+    "Catch the pizza slice card that completes 1/4 + 2/4.",
+    ["2/4", "3/4", "3/8"],
+    "b",
+    "The denominators match, so add 1 + 2 and keep the denominator 4.",
+  ),
+  pizzaCatch(
+    "af-pizza-02",
+    "Catch the pizza slice card equivalent to 1/2.",
+    ["1/4", "2/4", "3/4"],
+    "b",
+    "Two of four equal slices cover the same amount as one of two equal slices.",
   ),
   runner(
     "af-run-02",
@@ -246,6 +286,7 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
   const required = [
     "bridge_builder",
     "fraction_runner",
+    "pizza_catch",
     "treasure_match",
     "order_tower",
   ] as const;
@@ -261,7 +302,10 @@ export function selectQuizQuestions(count = 5, random = Math.random) {
       ...selected,
       ...shuffle(
         addingFractionsQuiz.filter(
-          (q) => !selected.includes(q) && q.type !== "fraction_runner",
+          (q) =>
+            !selected.includes(q) &&
+            q.type !== "fraction_runner" &&
+            q.type !== "pizza_catch",
         ),
         random,
       ).slice(0, count - selected.length),
@@ -283,6 +327,14 @@ export function publicQuestion(question: QuizQuestion): PublicQuizQuestion {
       type: question.type,
       prompt: question.prompt,
       lanes: question.lanes,
+      course: question.course,
+    };
+  if (question.type === "pizza_catch")
+    return {
+      id: question.id,
+      type: question.type,
+      prompt: question.prompt,
+      slices: question.slices,
       course: question.course,
     };
   if (question.type === "treasure_match")
@@ -313,6 +365,11 @@ export function isAnswerShape(
     return (
       typeof answer === "string" &&
       question.lanes.some((lane) => lane.id === answer)
+    );
+  if (question.type === "pizza_catch")
+    return (
+      typeof answer === "string" &&
+      question.slices.some((slice) => slice.id === answer)
     );
   if (question.type === "treasure_match")
     return (
@@ -351,6 +408,11 @@ export function isQuizDraftComplete(
       typeof draft === "string" &&
       question.lanes.some((lane) => lane.id === draft)
     );
+  if (question.type === "pizza_catch")
+    return (
+      typeof draft === "string" &&
+      question.slices.some((slice) => slice.id === draft)
+    );
 
   if (question.type === "treasure_match") {
     if (!draft || typeof draft !== "object" || Array.isArray(draft))
@@ -382,6 +444,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
       ? answer === question.correctOptionId
       : question.type === "fraction_runner"
         ? answer === question.correctLaneId
+      : question.type === "pizza_catch"
+        ? answer === question.correctSliceId
       : question.type === "treasure_match"
         ? question.pairs.every(
             (p) => (answer as Record<string, string>)[p.source] === p.target,
@@ -394,6 +458,8 @@ export function evaluateQuizAnswer(question: QuizQuestion, answer: QuizAnswer) {
       ? question.correctOptionId
       : question.type === "fraction_runner"
         ? question.correctLaneId
+      : question.type === "pizza_catch"
+        ? question.correctSliceId
       : question.type === "treasure_match"
         ? Object.fromEntries(question.pairs.map((p) => [p.source, p.target]))
         : question.correctOrder;

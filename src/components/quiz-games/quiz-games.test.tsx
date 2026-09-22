@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { OrderTower } from "./order-tower";
 import { FractionRunner } from "./fraction-runner";
+import { PizzaCatch } from "./pizza-catch";
 import { TreasureMatch } from "./treasure-match";
 
 const treasureQuestion = {
@@ -33,6 +34,18 @@ const runnerQuestion = {
     { id: "c", label: "3/4" },
   ],
   course: { stepCount: 2, stepDurationMs: 99_999, obstacles: [] },
+};
+
+const pizzaQuestion = {
+  id: "pizza-1",
+  type: "pizza_catch" as const,
+  prompt: "Catch the answer",
+  slices: [
+    { id: "a", label: "1/4" },
+    { id: "b", label: "1/2" },
+    { id: "c", label: "3/4" },
+  ],
+  course: { stepCount: 2, stepDurationMs: 99_999 },
 };
 
 describe("quiz game controls", () => {
@@ -94,5 +107,15 @@ describe("quiz game controls", () => {
     expect(screen.getByText("Lane 3, step 0 of 2.")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /pause/i }));
     expect(screen.getByRole("button", { name: /resume run/i })).toBeInTheDocument();
+  });
+
+  it("starts Pizza Catch and moves the plate with accessible controls", async () => {
+    const user = userEvent.setup();
+    render(<PizzaCatch question={pizzaQuestion} onChange={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: /start catching/i }));
+    expect(screen.getByLabelText("Plate in lane 2")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Move plate right" }));
+    expect(screen.getByLabelText("Plate in lane 3")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /pause/i })).toBeEnabled();
   });
 });

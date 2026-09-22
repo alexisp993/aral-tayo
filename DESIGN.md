@@ -178,7 +178,7 @@ Hearts, streak, and points appear as compact tactile chips. Progress uses a dark
 
 ### Fraction Quest games
 
-Five visible checkpoint nodes show session progress without exposing outcomes. Fraction Runner appears exactly once in each quest: learners steer across three lanes with keyboard or touch, dodge an authored obstacle course, pause safely when the tab is hidden, and cross a labeled finish gate to create their draft answer. Reduced-motion users advance the same deterministic course one step at a time. Bridge Builder uses large button planks, Treasure Match uses labeled selects with unique destinations, and Order Tower uses explicit Move up/Move down controls. Each mechanism is keyboard and touch operable; brief placement, unlock, reorder, runner, and checkpoint motion is removed for reduced-motion preferences.
+Five visible checkpoint nodes show session progress without exposing outcomes. Pizza Slice Catch asks learners to steer a plate under one of three falling fraction cards; Fraction Runner asks them to dodge an authored obstacle course and cross a labeled finish gate. Both action games pause when the tab is hidden and replace automatic motion with explicit step controls for reduced-motion users. Bridge Builder uses large button planks, Treasure Match uses labeled selects with unique destinations, and Order Tower uses explicit Move up/Move down controls. Every quest includes each mechanism once, and every mechanism is keyboard and touch operable.
 
 ## Do's and Don'ts
 
