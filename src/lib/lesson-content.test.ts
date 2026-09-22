@@ -25,10 +25,20 @@ describe("lesson content registry", () => {
     expect(seed?.lesson.practice.activities.every((activity) => activity.id.startsWith("sf-pr-"))).toBe(true);
   });
 
+  it("registers a complete Equivalent Fractions lesson", () => {
+    const seed = getLessonSeed("equivalent-fractions");
+    expect(seed?.lesson.title).toBe("Equivalent Fractions");
+    expect(seed?.lesson.learn_blocks).toHaveLength(5);
+    expect(seed?.lesson.flashcards).toHaveLength(8);
+    expect(seed?.lesson.practice.activities).toHaveLength(7);
+    expect(seed?.lesson.practice.activities.every((activity) => activity.id.startsWith("ef-pr-"))).toBe(true);
+  });
+
   it("rejects lessons without registered content", () => {
     expect(isLessonSlug("adding-fractions")).toBe(true);
     expect(isLessonSlug("comparing-fractions")).toBe(true);
     expect(isLessonSlug("subtracting-fractions")).toBe(true);
+    expect(isLessonSlug("equivalent-fractions")).toBe(true);
     expect(isLessonSlug("missing-lesson")).toBe(false);
     expect(getLessonSeed("missing-lesson")).toBeUndefined();
   });

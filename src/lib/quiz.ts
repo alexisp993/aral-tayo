@@ -520,10 +520,22 @@ export const subtractingFractionsQuiz: QuizQuestion[] = [
   { id: "sf-match-01", type: "treasure_match", prompt: "Match each subtraction with its difference.", pairs: [{ source: "5/8 − 2/8", target: "3/8" }, { source: "4/6 − 1/6", target: "3/6" }, { source: "3/4 − 1/2", target: "1/4" }], explanation: "Use a common denominator, then subtract the numerators." },
   { id: "sf-order-01", type: "order_tower", prompt: "Put the steps for 3/4 − 1/2 in order.", items: [{ id: "b", label: "Rewrite 1/2 as 2/4" }, { id: "c", label: "Subtract 3/4 − 2/4 = 1/4" }, { id: "a", label: "Choose 4 as a common denominator" }], correctOrder: ["a", "b", "c"], explanation: "Find a common denominator, rewrite, then subtract." },
 ];
+export const equivalentFractionsQuiz: QuizQuestion[] = [
+  choice("ef-bridge-01", "Build the bridge to the fraction equal to 1/2.", ["2/4", "1/4", "3/4"], "a", "Two fourths names the same amount as one half."),
+  runner("ef-run-01", "Run to the fraction equivalent to 2/3.", ["4/6", "3/6", "5/6"], "a", "Multiply both 2 and 3 by 2 to get four sixths.", { stepCount: 18, stepDurationMs: 420, obstacles: [{ step: 4, lane: 1 }, { step: 8, lane: 2 }, { step: 12, lane: 0 }, { step: 15, lane: 1 }] }),
+  pizzaCatch("ef-pizza-01", "Catch the pizza slice card equivalent to 3/4.", ["6/8", "3/8", "4/6"], "a", "Multiply both 3 and 4 by 2 to make six eighths."),
+  numberLineDash("ef-line-01", "Dash to the point that is equivalent to 2/4.", "c", "Two fourths is one half, which is the middle point."),
+  fractionCannon("ef-cannon-01", "Aim at the fraction equivalent to 1/3.", ["2/6", "3/6", "4/6"], "a", "Multiply both parts of one third by 2."),
+  recipeBuilder("ef-recipe-01", "Mix exactly two ingredients to make an amount equal to 1/2 cup.", ["1/4 cup mango", "1/4 cup milk", "1/8 cup oats", "3/8 cup yogurt"], ["a", "b"], "One fourth plus one fourth makes two fourths, equal to one half."),
+  fractionMemory("ef-memory-01", "Clear the board by matching all equivalent fractions.", ["1/2", "2/3", "2/4", "4/6", "3/4", "6/8"], [["a", "c"], ["b", "d"], ["e", "f"]], "Each pair represents the same amount."),
+  { id: "ef-match-01", type: "treasure_match", prompt: "Match each fraction with an equivalent fraction.", pairs: [{ source: "1/2", target: "4/8" }, { source: "1/3", target: "2/6" }, { source: "3/4", target: "6/8" }], explanation: "Multiply the numerator and denominator by the same number." },
+  { id: "ef-order-01", type: "order_tower", prompt: "Put the steps for making 2/3 into sixths in order.", items: [{ id: "b", label: "Multiply the numerator: 2 × 2 = 4" }, { id: "c", label: "Write the equivalent fraction 4/6" }, { id: "a", label: "Multiply the denominator: 3 × 2 = 6" }], correctOrder: ["a", "b", "c"], explanation: "Multiply both parts by the same number, then write the new fraction." },
+];
 const quizBanks: Record<string, QuizQuestion[]> = {
   "adding-fractions": addingFractionsQuiz,
   "comparing-fractions": comparingFractionsQuiz,
   "subtracting-fractions": subtractingFractionsQuiz,
+  "equivalent-fractions": equivalentFractionsQuiz,
 };
 export function findQuestion(id: string) {
   return Object.values(quizBanks)

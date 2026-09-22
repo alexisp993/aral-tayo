@@ -1,6 +1,6 @@
 # Aral Tayo
 
-Philippine curriculum-aligned interactive learning for K–12 students. The implemented Grade 5 Mathematics fraction lessons cover Adding Fractions, Comparing Fractions, and Subtracting Fractions.
+Philippine curriculum-aligned interactive learning for K–12 students. The implemented Grade 5 Mathematics fraction lessons cover Equivalent Fractions, Adding Fractions, Comparing Fractions, and Subtracting Fractions.
 
 ## Stack
 
@@ -53,6 +53,8 @@ Add the Supabase URL, publishable key, and secret/service-role key to `.env.loca
 **Comparing Fractions lesson.** A second complete topic now includes Learn content, eight flashcards, seven authenticated Practice activities, independent completion tracking, and a dedicated nine-game Fraction Quest question bank.
 
 **Subtracting Fractions lesson.** A third complete topic covers subtracting like and unlike fractions with its own Learn, Flashcards, Practice, gated progress, and nine-game Fraction Quest bank.
+
+**Equivalent Fractions lesson.** A fourth complete topic builds the visual and number-sense foundation for fraction operations with its own Learn, Flashcards, Practice, gated progress, and nine-game Fraction Quest bank.
 
 Lesson content is registered centrally. Dynamic lesson routes, Practice validation, progress tracking, and Quiz selection all resolve the same registered slug, providing the foundation for additional topics without duplicating route logic.
 

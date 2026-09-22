@@ -87,7 +87,7 @@ export const mathUnits = [
   {
     title: "Fractions",
     description: "Equivalent fractions and fraction operations",
-    lessonCount: 3,
+    lessonCount: 4,
     current: true,
   },
   {
@@ -167,7 +167,29 @@ export const subtractingFractionsLesson = {
   visual: { label: "Three fourths minus one fourth equals one half", parts: ["3⁄4", "−", "1⁄4", "=", "1⁄2"] },
 } as const;
 
+export const equivalentFractionsLesson = {
+  title: "Equivalent Fractions",
+  slug: "equivalent-fractions",
+  subject: "Mathematics",
+  subjectSlug: "mathematics",
+  grade: "Grade 5",
+  quarter: "Quarter 1",
+  unit: "Unit 4: Fractions",
+  estimatedMinutes: 25,
+  summary:
+    "Learn how different-looking fractions can name the same amount by using visual models and multiplying or dividing equal parts.",
+  competencies: [
+    "Identify fractions that represent the same amount.",
+    "Use visual models to recognize equivalent fractions.",
+    "Generate equivalent fractions by multiplying numerator and denominator.",
+    "Simplify simple fractions by dividing numerator and denominator.",
+    "Use equivalent fractions in everyday fraction problems.",
+  ],
+  visual: { label: "One half equals two fourths", parts: ["1⁄2", "=", "2⁄4"] },
+} as const;
+
 export const lessons = [
+  equivalentFractionsLesson,
   addingFractionsLesson,
   comparingFractionsLesson,
   subtractingFractionsLesson,

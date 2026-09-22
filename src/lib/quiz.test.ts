@@ -4,6 +4,7 @@ import {
   addingFractionsQuiz,
   comparingFractionsQuiz,
   subtractingFractionsQuiz,
+  equivalentFractionsQuiz,
   evaluateQuizAnswer,
   gradeQuiz,
   isQuizDraftComplete,
@@ -71,6 +72,14 @@ describe("quiz engine", () => {
     expect(selected).toHaveLength(5);
     expect(new Set(selected.map((question) => question.type))).toHaveLength(5);
     expect(selected.every((question) => question.id.startsWith("sf-"))).toBe(true);
+  });
+
+  it("builds Equivalent Fractions quests from five distinct game types", () => {
+    const selected = selectQuizQuestions("equivalent-fractions", 5, () => 0.5);
+    expect(equivalentFractionsQuiz).toHaveLength(9);
+    expect(selected).toHaveLength(5);
+    expect(new Set(selected.map((question) => question.type))).toHaveLength(5);
+    expect(selected.every((question) => question.id.startsWith("ef-"))).toBe(true);
   });
 
   it("does not expose matching associations or ordering solution", () => {

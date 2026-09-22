@@ -4,6 +4,7 @@ import {
   addingFractionsLesson,
   comparingFractionsLesson,
   subtractingFractionsLesson,
+  equivalentFractionsLesson,
   getLesson,
   getSubject,
   lessons,
@@ -15,7 +16,8 @@ describe("curriculum seed", () => {
     expect(getLesson("adding-fractions")).toBe(addingFractionsLesson);
     expect(getLesson("comparing-fractions")).toBe(comparingFractionsLesson);
     expect(getLesson("subtracting-fractions")).toBe(subtractingFractionsLesson);
-    expect(lessons).toHaveLength(3);
+    expect(getLesson("equivalent-fractions")).toBe(equivalentFractionsLesson);
+    expect(lessons).toHaveLength(4);
     expect(getLesson("missing-lesson")).toBeUndefined();
   });
 });

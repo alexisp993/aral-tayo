@@ -246,10 +246,43 @@ const subtractingFractionsSeed = {
   },
 } as unknown as typeof addingFractionsSeed;
 
+const equivalentFractionsSeed = {
+  lesson: {
+    title: "Equivalent Fractions", slug: "equivalent-fractions", version: 1,
+    learn_blocks: [
+      { type: "intro", ordinal: 1, title: "Different names, same amount", body: "Equivalent fractions look different but represent exactly the same amount of a whole." },
+      { type: "worked_example", ordinal: 2, title: "Split equal parts", body: "When each half is split into two equal parts, one half becomes two fourths.", example: { expression: "1/2 = ?/4", steps: ["Start with one of two equal parts.", "Split each half into two equal pieces.", "The same shaded amount is now two of four parts."], answer: "1/2 = 2/4" } },
+      { type: "key_takeaway", ordinal: 3, title: "Do the same to both", body: "Multiply or divide the numerator and denominator by the same nonzero number to make an equivalent fraction." },
+      { type: "worked_example", ordinal: 4, title: "Multiply both numbers", body: "To make sixths from thirds, multiply both numbers by two.", example: { expression: "2/3 = ?/6", steps: ["Multiply 2 by 2 to get 4.", "Multiply 3 by 2 to get 6.", "The value stays the same."], answer: "2/3 = 4/6" } },
+      { type: "real_life", ordinal: 5, title: "Sharing puto", body: "Eating 1/2 of two large puto is the same amount as eating 2/4 when each puto is cut into four equal pieces." },
+    ],
+    flashcards: [
+      { ordinal: 1, front: "Equivalent fractions", back: "Fractions that name the same amount." },
+      { ordinal: 2, front: "1/2", back: "2/4 and 4/8 are equivalent to one half." },
+      { ordinal: 3, front: "2/3", back: "4/6 is an equivalent fraction." },
+      { ordinal: 4, front: "3/4", back: "6/8 is an equivalent fraction." },
+      { ordinal: 5, front: "Multiply both", back: "Multiply numerator and denominator by the same number." },
+      { ordinal: 6, front: "Divide both", back: "Divide numerator and denominator by the same number to simplify." },
+      { ordinal: 7, front: "2/6", back: "It simplifies to 1/3." },
+      { ordinal: 8, front: "4/8", back: "It simplifies to 1/2." },
+    ],
+    practice: { activities: [
+      { id: "ef-pr-01", version: 1, type: "multiple_choice", ordinal: 1, instruction: "Choose the equivalent fraction.", config: { prompt: "Which fraction is equivalent to 1/2?", options: [{ id: "a", label: "1/4" }, { id: "b", label: "2/4" }, { id: "c", label: "3/4" }, { id: "d", label: "2/3" }] }, answer_key: { option_id: "b" }, hint: "Split each half into two equal pieces.", explanation: "One half and two fourths name the same amount." },
+      { id: "ef-pr-02", version: 1, type: "drag_drop", ordinal: 2, instruction: "Drag the equivalent fraction into the answer box.", config: { expression: "2/3 = ?/6", items: [{ id: "i1", label: "3/6" }, { id: "i2", label: "4/6" }, { id: "i3", label: "5/6" }], drop_zones: [{ id: "answer", label: "Equivalent fraction" }] }, answer_key: { placements: { answer: "i2" } }, hint: "Multiply both 2 and 3 by 2.", explanation: "Two thirds equals four sixths." },
+      { id: "ef-pr-03", version: 1, type: "match_pairs", ordinal: 3, instruction: "Match each fraction with an equivalent fraction.", config: { left: [{ id: "l1", label: "1/2" }, { id: "l2", label: "1/3" }, { id: "l3", label: "3/4" }], right: [{ id: "r1", label: "6/8" }, { id: "r2", label: "2/6" }, { id: "r3", label: "4/8" }] }, answer_key: { pairs: [["l1", "r3"], ["l2", "r2"], ["l3", "r1"]] }, hint: "Multiply the numerator and denominator by the same number.", explanation: "Every matching pair represents one equal amount." },
+      { id: "ef-pr-04", version: 1, type: "sort_categorize", ordinal: 4, instruction: "Sort fractions by the value they represent.", config: { categories: [{ id: "half", label: "Equal to 1/2" }, { id: "third", label: "Equal to 1/3" }, { id: "threequarters", label: "Equal to 3/4" }], items: [{ id: "s1", label: "2/4" }, { id: "s2", label: "2/6" }, { id: "s3", label: "6/8" }, { id: "s4", label: "4/8" }, { id: "s5", label: "3/9" }, { id: "s6", label: "9/12" }] }, answer_key: { mapping: { s1: "half", s4: "half", s2: "third", s5: "third", s3: "threequarters", s6: "threequarters" } }, hint: "Simplify each fraction or make a matching denominator.", explanation: "Different numerators and denominators can still show the same value." },
+      { id: "ef-pr-05", version: 1, type: "hotspot", ordinal: 5, instruction: "Select 4 of the 8 parts to show a fraction equivalent to 1/2.", config: { visual: { kind: "fraction_circle", parts: 8, regions: Array.from({ length: 8 }, (_, index) => ({ id: `part-${index + 1}`, label: `Part ${index + 1} of 8` })) }, selection: { min: 4, max: 4, rule: "selection_count" } }, answer_key: { selected_count: 4 }, hint: "Half of eight equal parts is four parts.", explanation: "Four eighths is equivalent to one half." },
+      { id: "ef-pr-06", version: 1, type: "multiple_choice", ordinal: 6, instruction: "Simplify a fraction.", config: { prompt: "Which fraction is equivalent to 4/8?", options: [{ id: "a", label: "1/2" }, { id: "b", label: "2/8" }, { id: "c", label: "4/4" }, { id: "d", label: "1/4" }] }, answer_key: { option_id: "a" }, hint: "Divide both 4 and 8 by 4.", explanation: "4/8 simplifies to 1/2." },
+      { id: "ef-pr-07", version: 1, type: "multiple_choice", ordinal: 7, instruction: "Solve the story problem.", config: { prompt: "Noel drank 2/4 of a bottle of tubig, while Bea drank 1/2 of another same-sized bottle. Which is true?", options: [{ id: "a", label: "Noel drank more" }, { id: "b", label: "Bea drank more" }, { id: "c", label: "They drank the same amount" }, { id: "d", label: "There is not enough information" }] }, answer_key: { option_id: "c" }, hint: "Two fourths is another name for one half.", explanation: "Both students drank one half of a same-sized bottle." },
+    ] },
+  },
+} as unknown as typeof addingFractionsSeed;
+
 const lessonSeeds = {
   "adding-fractions": addingFractionsSeed,
   "comparing-fractions": comparingFractionsSeed,
   "subtracting-fractions": subtractingFractionsSeed,
+  "equivalent-fractions": equivalentFractionsSeed,
 } as const;
 
 export type LessonSlug = keyof typeof lessonSeeds;
